@@ -1,23 +1,24 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+
+import { loadConfig } from './config/load.config';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from './modules/user/user.module';
-import envs from './config/load.config';
+import { SqliteConfigService } from './config/sqlite.config.service';
 import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: envs.databaseFileName,
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: false,
+    ConfigModule.forRoot({
+      load: [loadConfig],
+      isGlobal: true,
     }),
-    UserModule,
+    TypeOrmModule.forRootAsync({
+      useClass: SqliteConfigService,
+      inject: [SqliteConfigService],
+    }),
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
