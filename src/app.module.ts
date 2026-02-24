@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
+import { SqliteConfigService } from './config/sqlite.config.service';
 import { loadConfig } from './config/load.config';
 import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { SqliteConfigService } from './config/sqlite.config.service';
 import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
