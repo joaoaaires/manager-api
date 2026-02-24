@@ -1,6 +1,6 @@
-import { InternalServerErrorException } from '@nestjs/common';
+import { ConflictException } from '@nestjs/common';
 
-export class EmailAlreadyExistsException extends InternalServerErrorException {
+export class EmailAlreadyExistsException extends ConflictException {
   constructor() {
     super('E-mail já existe.');
   }
