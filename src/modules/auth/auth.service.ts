@@ -2,9 +2,14 @@ import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 import { UserService } from '../user/user.service';
-import { SignUpDto } from './dto/sign-up.dto';
 import { JwtService } from '@nestjs/jwt';
-import { SignInDto } from './dto/sign-in.dto';
+import {
+  SignUpDto,
+  SignInDto,
+  SignUpResponseDto,
+  SignInResponseDto,
+  ProfileResponseDto,
+} from './dto';
 import { UserUnauthorizedException } from './errors';
 import { AuthGuardRequest } from './interfaces';
 
@@ -15,17 +20,23 @@ export class AuthService {
     private readonly userService: UserService,
   ) {}
 
-  public async register(signUpDto: SignUpDto) {
+  public async register(signUpDto: SignUpDto): Promise<SignUpResponseDto> {
     const user = await this.userService.create(signUpDto);
 
     const payload = { sub: user.id, username: user.email };
     const accessToken = await this.jwtService.signAsync(payload);
 
-    const { password, ...response } = user; //remover o password
-    return { ...response, token: accessToken }; // adicionar o token
+    return Object.assign(new SignUpResponseDto(), {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      createAt: user.createAt,
+      updateAt: user.updateAt,
+      token: accessToken,
+    });
   }
 
-  public async access(signInDto: SignInDto) {
+  public async access(signInDto: SignInDto): Promise<SignInResponseDto> {
     const user = await this.userService.readOneByEmail(signInDto.email);
     const validation = await bcrypt.compare(signInDto.password, user.password);
     if (!validation) {
@@ -35,14 +46,26 @@ export class AuthService {
     const payload = { sub: user.id, username: user.email };
     const accessToken = await this.jwtService.signAsync(payload);
 
-    const { password, ...response } = user; //remover o password
-    return { ...response, token: accessToken }; // adicionar o token
+    return Object.assign(new SignInResponseDto(), {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      createAt: user.createAt,
+      updateAt: user.updateAt,
+      token: accessToken,
+    });
   }
 
-  public async profile(request: AuthGuardRequest) {
+  public async profile(request: AuthGuardRequest): Promise<ProfileResponseDto> {
     const payload = request.payload;
     const user = await this.userService.readOneByEmail(payload.username);
-    const { password, ...response } = user; //remover o password
-    return response;
+
+    return Object.assign(new ProfileResponseDto(), {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      createAt: user.createAt,
+      updateAt: user.updateAt,
+    });
   }
 }

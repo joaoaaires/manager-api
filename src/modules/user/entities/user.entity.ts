@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import {
   Column,
   CreateDateColumn,
@@ -15,18 +16,19 @@ export class UserEntity {
   @Column({ name: 'name', length: 100, nullable: false })
   name: string;
 
-  @Column({ name: 'email', length: 70, nullable: false })
+  @Column({ name: 'email', length: 70, nullable: false, unique: true })
   email: string;
 
+  @Exclude()
   @Column({ name: 'password', length: 255, nullable: false })
   password: string;
 
   @CreateDateColumn({ name: 'create_at' })
-  createAt: string;
+  createAt: Date;
 
   @UpdateDateColumn({ name: 'update_at' })
-  updateAt: string;
+  updateAt: Date;
 
   @DeleteDateColumn({ name: 'delete_at' })
-  deleteAt: string;
+  deleteAt: Date;
 }
