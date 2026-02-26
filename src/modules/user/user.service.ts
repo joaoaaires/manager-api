@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
-import envs from '../../config/load.config';
+// import envs from '../../config/load.config';
 import { UserEntity } from './entities/user.entity';
 import { UserRepository } from './user.repository';
 import { EmailAlreadyExistsException, UserNotFoundException } from './errors';
@@ -20,7 +20,7 @@ export class UserService {
       throw new EmailAlreadyExistsException();
     }
 
-    const passwordCrypt = await bcrypt.hash(createUserDto.password, envs.salt);
+    const passwordCrypt = await bcrypt.hash(createUserDto.password, 10);
 
     user = new UserEntity();
     Object.assign(user, {
@@ -33,6 +33,14 @@ export class UserService {
 
   async readOneByEmail(email: string) {
     const user = await this.userRepository.findOneBy({ email });
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+    return user;
+  }
+
+  async readOneById(id: string) {
+    const user = await this.userRepository.findOneBy({ id });
     if (!user) {
       throw new UserNotFoundException();
     }

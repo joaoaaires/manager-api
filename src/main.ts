@@ -2,11 +2,12 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-
-const port = Number(process.env.PORT ?? 3000);
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // setup validation params
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -15,16 +16,29 @@ async function bootstrap() {
     }),
   );
 
-  const config = new DocumentBuilder()
-    .setTitle('API')
-    .setDescription('The cats API description')
-    .setVersion('1.0')
+  // setup swagger
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('Manager API')
+    .setDescription('API documentation for authentication and user management.')
+    .setVersion('1.0.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+      'bearer',
+    )
     .build();
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, documentFactory);
+  const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('docs', app, swaggerDocument, {
+    swaggerOptions: { persistAuthorization: true },
+  });
 
+  // setup port with .env
+  const configService = app.get(ConfigService);
+  const port = configService.getOrThrow<number>('port');
   await app.listen(port);
+  console.log(`Server start on ${port} port.`);
 }
-bootstrap()
-  .then(() => console.log(`Server start on ${port} port.`))
-  .catch((error) => console.log(error));
+void bootstrap();

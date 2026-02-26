@@ -1,8 +1,13 @@
 export interface JwtPayload {
   sub: string;
-  username: string;
+  iss?: string;
+  aud?: string | string[];
 }
 
-export interface AuthGuardRequest extends Request {
-  payload: JwtPayload;
+export interface AuthenticatedUser {
+  id: string;
+}
+
+export interface AuthenticatedRequest extends Request {
+  user: AuthenticatedUser;
 }
