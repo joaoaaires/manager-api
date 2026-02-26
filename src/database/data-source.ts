@@ -1,6 +1,6 @@
 import 'dotenv/config';
-import { join } from 'node:path';
 import { DataSource } from 'typeorm';
+import { join } from 'node:path';
 
 const databaseFileName = process.env.DATABASE_FILE_NAME || 'data.db';
 

@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Index,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -16,6 +17,10 @@ export class UserEntity {
   name!: string;
 
   @Column({ name: 'email', length: 70, nullable: false })
+  @Index('UQ_user_email_active', {
+    unique: true,
+    where: '"delete_at" IS NULL',
+  })
   email!: string;
 
   @Column({ name: 'password', length: 255, nullable: false })
@@ -27,6 +32,6 @@ export class UserEntity {
   @UpdateDateColumn({ name: 'update_at' })
   updateAt!: string;
 
-  @DeleteDateColumn({ name: 'delete_at' })
-  deleteAt!: string;
+  @DeleteDateColumn({ name: 'delete_at', nullable: true })
+  deleteAt!: string | null;
 }
