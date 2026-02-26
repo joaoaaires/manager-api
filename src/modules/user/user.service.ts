@@ -1,15 +1,22 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ConfigService } from '@nestjs/config';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
-// import envs from '../../config/load.config';
+import { TenantService } from '../../config/tenant/tenant.service';
 import { UserEntity } from './entities/user.entity';
-import { UserRepository } from './user.repository';
 import { EmailAlreadyExistsException, UserNotFoundException } from './errors';
 import { CreateUserDto } from './dto';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+    private readonly configService: ConfigService,
+    private readonly tenantService: TenantService,
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     let user = await this.userRepository.findOneBy({
@@ -20,7 +27,8 @@ export class UserService {
       throw new EmailAlreadyExistsException();
     }
 
-    const passwordCrypt = await bcrypt.hash(createUserDto.password, 10);
+    const salt = this.configService.getOrThrow<number>('salt');
+    const passwordCrypt = await bcrypt.hash(createUserDto.password, salt);
 
     user = new UserEntity();
     Object.assign(user, {

@@ -1,16 +1,25 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiCreatedResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
 import { AuthResponseDto, SignInDto, SignUpDto } from './dto';
+import { UserResponseDto } from '../user/dto';
+import { AuthGuard } from './auth.guard';
+import type { AuthenticatedRequest } from './interfaces';
+import { UserService } from '../user/user.service';
 
 @Controller()
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+  ) {}
 
   @ApiOperation({ summary: 'Register a new user account' })
   @ApiCreatedResponse({
@@ -31,5 +40,19 @@ export class AuthController {
   @Post('sign-in')
   signIn(@Body() signInDto: SignInDto) {
     return this.authService.access(signInDto);
+  }
+
+  @ApiOperation({ summary: 'Get authenticated user profile' })
+  @ApiBearerAuth('bearer')
+  @ApiOkResponse({
+    type: UserResponseDto,
+    description: 'Authenticated user profile.',
+  })
+  @ApiUnauthorizedResponse({ description: 'Missing or invalid bearer token.' })
+  @UseGuards(AuthGuard)
+  @Get('profile')
+  async profile(@Req() request: AuthenticatedRequest) {
+    const user = await this.userService.readOneById(request.user.id);
+    return UserResponseDto.fromEntity(user);
   }
 }
