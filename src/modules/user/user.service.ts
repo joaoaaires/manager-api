@@ -4,7 +4,6 @@ import { ConfigService } from '@nestjs/config';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
-import { TenantService } from '../../config/tenant/tenant.service';
 import { UserEntity } from './entities/user.entity';
 import { EmailAlreadyExistsException, UserNotFoundException } from './errors';
 import { CreateUserDto } from './dto';
@@ -15,7 +14,6 @@ export class UserService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     private readonly configService: ConfigService,
-    private readonly tenantService: TenantService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {

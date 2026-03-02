@@ -26,10 +26,6 @@ export class UserEntity {
   @Column({ name: 'password', length: 255, nullable: false })
   password!: string;
 
-  @Column({ name: 'database_name', length: 64, nullable: false })
-  @Index('UQ_user_database_name', { unique: true })
-  databaseName!: string;
-
   @CreateDateColumn({ name: 'create_at' })
   createAt!: string;
 

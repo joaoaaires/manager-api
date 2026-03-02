@@ -1,26 +1,26 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class CreateColumnDatabaseToUser1772138443779 implements MigrationInterface {
-    name = 'CreateColumnDatabaseToUser1772138443779'
+export class CreateTableUser1772486255702 implements MigrationInterface {
+    name = 'CreateTableUser1772486255702'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`DROP INDEX "UQ_user_database_name"`);
         await queryRunner.query(`DROP INDEX "UQ_user_email_active"`);
-        await queryRunner.query(`CREATE TABLE "temporary_user" ("id" varchar PRIMARY KEY NOT NULL, "name" varchar(100) NOT NULL, "email" varchar(70) NOT NULL, "password" varchar(255) NOT NULL, "create_at" datetime NOT NULL DEFAULT (datetime('now')), "update_at" datetime NOT NULL DEFAULT (datetime('now')), "delete_at" datetime, "database_name" varchar(64) NOT NULL)`);
+        await queryRunner.query(`CREATE TABLE "temporary_user" ("id" varchar PRIMARY KEY NOT NULL, "name" varchar(100) NOT NULL, "email" varchar(70) NOT NULL, "password" varchar(255) NOT NULL, "create_at" datetime NOT NULL DEFAULT (datetime('now')), "update_at" datetime NOT NULL DEFAULT (datetime('now')), "delete_at" datetime)`);
         await queryRunner.query(`INSERT INTO "temporary_user"("id", "name", "email", "password", "create_at", "update_at", "delete_at") SELECT "id", "name", "email", "password", "create_at", "update_at", "delete_at" FROM "user"`);
         await queryRunner.query(`DROP TABLE "user"`);
         await queryRunner.query(`ALTER TABLE "temporary_user" RENAME TO "user"`);
         await queryRunner.query(`CREATE UNIQUE INDEX "UQ_user_email_active" ON "user" ("email") WHERE "delete_at" IS NULL`);
-        await queryRunner.query(`CREATE UNIQUE INDEX "UQ_user_database_name" ON "user" ("database_name") `);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`DROP INDEX "UQ_user_database_name"`);
         await queryRunner.query(`DROP INDEX "UQ_user_email_active"`);
         await queryRunner.query(`ALTER TABLE "user" RENAME TO "temporary_user"`);
-        await queryRunner.query(`CREATE TABLE "user" ("id" varchar PRIMARY KEY NOT NULL, "name" varchar(100) NOT NULL, "email" varchar(70) NOT NULL, "password" varchar(255) NOT NULL, "create_at" datetime NOT NULL DEFAULT (datetime('now')), "update_at" datetime NOT NULL DEFAULT (datetime('now')), "delete_at" datetime)`);
+        await queryRunner.query(`CREATE TABLE "user" ("id" varchar PRIMARY KEY NOT NULL, "name" varchar(100) NOT NULL, "email" varchar(70) NOT NULL, "password" varchar(255) NOT NULL, "create_at" datetime NOT NULL DEFAULT (datetime('now')), "update_at" datetime NOT NULL DEFAULT (datetime('now')), "delete_at" datetime, "database_name" varchar(64) NOT NULL)`);
         await queryRunner.query(`INSERT INTO "user"("id", "name", "email", "password", "create_at", "update_at", "delete_at") SELECT "id", "name", "email", "password", "create_at", "update_at", "delete_at" FROM "temporary_user"`);
         await queryRunner.query(`DROP TABLE "temporary_user"`);
         await queryRunner.query(`CREATE UNIQUE INDEX "UQ_user_email_active" ON "user" ("email") WHERE "delete_at" IS NULL`);
+        await queryRunner.query(`CREATE UNIQUE INDEX "UQ_user_database_name" ON "user" ("database_name") `);
     }
 
 }
