@@ -1,24 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
-import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
-import { UserEntity } from './entities/user.entity';
 import { EmailAlreadyExistsException, UserNotFoundException } from './errors';
 import { CreateUserDto } from './dto';
+import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '../../generated/prisma/browser';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
+    private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    let user = await this.userRepository.findOneBy({
-      email: createUserDto.email,
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: createUserDto.email,
+      },
     });
 
     if (user) {
@@ -28,17 +28,23 @@ export class UserService {
     const salt = this.configService.getOrThrow<number>('salt');
     const passwordCrypt = await bcrypt.hash(createUserDto.password, salt);
 
-    user = new UserEntity();
-    Object.assign(user, {
-      ...createUserDto,
+    const data: Prisma.UserCreateInput = {
+      name: createUserDto.name,
+      email: createUserDto.email,
       password: passwordCrypt,
-    } as UserEntity);
+    };
 
-    return this.userRepository.save(user);
+    return this.prisma.user.create({
+      data,
+    });
   }
 
   async readOneByEmail(email: string) {
-    const user = await this.userRepository.findOneBy({ email });
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
     if (!user) {
       throw new UserNotFoundException();
     }
@@ -46,7 +52,11 @@ export class UserService {
   }
 
   async readOneById(id: string) {
-    const user = await this.userRepository.findOneBy({ id });
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
     if (!user) {
       throw new UserNotFoundException();
     }

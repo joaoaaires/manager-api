@@ -1,17 +1,10 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
-import {
-  HealthCheck,
-  HealthCheckService,
-  TypeOrmHealthIndicator,
-} from '@nestjs/terminus';
+import { HealthCheck, HealthCheckService } from '@nestjs/terminus';
 
 @Controller('health')
 export class HealthController {
-  constructor(
-    private readonly health: HealthCheckService,
-    private readonly typeOrm: TypeOrmHealthIndicator,
-  ) {}
+  constructor(private readonly health: HealthCheckService) {}
 
   @ApiOperation({ summary: 'Health status endpoint' })
   @ApiOkResponse({
@@ -20,6 +13,6 @@ export class HealthController {
   @Get()
   @HealthCheck()
   check() {
-    return this.health.check([() => this.typeOrm.pingCheck('database')]);
+    return this.health.check([]);
   }
 }

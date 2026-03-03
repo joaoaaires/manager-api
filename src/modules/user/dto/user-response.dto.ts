@@ -1,6 +1,7 @@
 import { Expose, plainToInstance } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { UserEntity } from '../entities/user.entity';
+
+import { UserModel } from '../../../generated/prisma/models';
 
 export class UserResponseDto {
   @ApiProperty({ example: '3205a837-7475-4969-8950-2d49ef6a47f5' })
@@ -23,7 +24,7 @@ export class UserResponseDto {
   @Expose()
   updateAt!: string;
 
-  static fromEntity(user: UserEntity): UserResponseDto {
+  static fromEntity(user: UserModel): UserResponseDto {
     return plainToInstance(UserResponseDto, user, {
       excludeExtraneousValues: true,
     });
