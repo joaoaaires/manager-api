@@ -18,7 +18,7 @@ const getPositiveNumber = (env: Env, key: string): number => {
 
 export const loadValidation = (env: Env): Env => {
   getPositiveNumber(env, 'PORT');
-  getString(env, 'DATABASE_FILE_NAME');
+  getString(env, 'DATABASE_URL');
   getPositiveNumber(env, 'SALT');
   getString(env, 'SECRET');
   getPositiveNumber(env, 'JWT_EXPIRES_IN');

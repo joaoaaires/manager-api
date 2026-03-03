@@ -1,6 +1,6 @@
 export const loadConfig = () => ({
   port: Number(process.env.PORT ?? 3000),
-  databaseFileName: process.env.DATABASE_FILE_NAME || 'data.db',
+  databaseUrl: process.env.DATABASE_URL,
   salt: Number(process.env.SALT ?? 10),
   secret: process.env.SECRET,
   jwtExpiresIn: Number(process.env.JWT_EXPIRES_IN ?? 86400),
