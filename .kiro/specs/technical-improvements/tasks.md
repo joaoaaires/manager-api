@@ -49,8 +49,8 @@ Implementação incremental das 24 melhorias técnicas, seguindo a ordem de prio
 - [x] 2. Checkpoint — Verificar quick wins
   - Garantir que o projeto compila e inicia sem erros. Perguntar ao usuário se há dúvidas.
 
-- [ ] 3. Segurança — CORS e Rate Limiting
-  - [ ] 3.1 Configurar CORS com origens de variáveis de ambiente
+- [x] 3. Segurança — CORS e Rate Limiting
+  - [x] 3.1 Configurar CORS com origens de variáveis de ambiente
     - Ler `CORS_ORIGINS` do ConfigService, fazer split por vírgula e trim
     - Configurar `app.enableCors()` em `src/main.ts` com origens, métodos e `credentials: true`
     - _Requisitos: 1.1, 1.2, 1.3_
@@ -59,7 +59,7 @@ Implementação incremental das 24 melhorias técnicas, seguindo a ordem de prio
     - **Property 1: Parsing de origens CORS**
     - **Valida: Requisitos 1.1**
 
-  - [ ] 3.3 Implementar rate limiting com @nestjs/throttler
+  - [x] 3.3 Implementar rate limiting com @nestjs/throttler
     - Instalar `@nestjs/throttler`
     - Configurar `ThrottlerModule.forRoot()` no `AppModule` com limites default e auth
     - Registrar `ThrottlerGuard` como `APP_GUARD` global

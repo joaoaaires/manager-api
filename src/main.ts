@@ -11,6 +11,15 @@ async function bootstrap() {
   // security headers
   app.use(helmet());
 
+  // CORS configuration
+  const configService = app.get(ConfigService);
+  const corsOrigins = configService.getOrThrow<string>('corsOrigins');
+  app.enableCors({
+    origin: corsOrigins.split(',').map((o) => o.trim()),
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    credentials: true,
+  });
+
   // enable graceful shutdown hooks
   app.enableShutdownHooks();
 
@@ -47,7 +56,6 @@ async function bootstrap() {
   }
 
   // setup port with .env
-  const configService = app.get(ConfigService);
   const port = configService.getOrThrow<number>('port');
   await app.listen(port);
   console.log(`Server start on ${port} port.`);

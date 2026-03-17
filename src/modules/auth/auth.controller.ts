@@ -4,8 +4,10 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTooManyRequestsResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 
 import { AuthService } from './auth.service';
 import { AuthResponseDto, SignInDto, SignUpDto } from './dto';
@@ -26,6 +28,10 @@ export class AuthController {
     type: AuthResponseDto,
     description: 'User created and JWT token returned.',
   })
+  @ApiTooManyRequestsResponse({
+    description: 'Limite de requisições excedido.',
+  })
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
   @Post('sign-up')
   signUp(@Body() signUpDto: SignUpDto) {
     return this.authService.register(signUpDto);
@@ -37,6 +43,10 @@ export class AuthController {
     description: 'User authenticated and JWT token returned.',
   })
   @ApiUnauthorizedResponse({ description: 'Invalid e-mail and/or password.' })
+  @ApiTooManyRequestsResponse({
+    description: 'Limite de requisições excedido.',
+  })
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
   @Post('sign-in')
   signIn(@Body() signInDto: SignInDto) {
     return this.authService.access(signInDto);
