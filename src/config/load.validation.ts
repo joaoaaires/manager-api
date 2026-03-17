@@ -24,5 +24,6 @@ export const loadValidation = (env: Env): Env => {
   getPositiveNumber(env, 'JWT_EXPIRES_IN');
   getString(env, 'JWT_ISSUER');
   getString(env, 'JWT_AUDIENCE');
+  getString(env, 'CORS_ORIGINS');
   return env;
 };

@@ -6,22 +6,22 @@ Implementação incremental das 24 melhorias técnicas, seguindo a ordem de prio
 
 ## Tarefas
 
-- [ ] 1. Quick Wins — Limpeza e configurações rápidas
-  - [ ] 1.1 Remover dependências não utilizadas do package.json
+- [-] 1. Quick Wins — Limpeza e configurações rápidas
+  - [x] 1.1 Remover dependências não utilizadas do package.json
     - Remover `@nestjs/typeorm`, `typeorm`, `sqlite3`, `@prisma/adapter-better-sqlite3`, `@types/better-sqlite3` e `serverless-http`
     - Verificar que o projeto compila sem erros após remoção
     - _Requisitos: 10.1, 10.2, 10.3_
 
-  - [ ] 1.2 Habilitar cache do ConfigModule
+  - [-] 1.2 Habilitar cache do ConfigModule
     - Adicionar `cache: true` no `ConfigModule.forRoot()` em `src/app.module.ts`
     - _Requisitos: 16.1, 16.2_
 
-  - [ ] 1.3 Implementar graceful shutdown do Prisma
+  - [-] 1.3 Implementar graceful shutdown do Prisma
     - Adicionar `OnModuleDestroy` ao `PrismaService` com `$disconnect()`
     - Adicionar `app.enableShutdownHooks()` em `src/main.ts`
     - _Requisitos: 8.1, 8.2, 8.3_
 
-  - [ ] 1.4 Remover fallbacks de variáveis sensíveis no loadConfig
+  - [-] 1.4 Remover fallbacks de variáveis sensíveis no loadConfig
     - Remover operadores `??` de `PORT`, `SALT`, `JWT_EXPIRES_IN`, `JWT_ISSUER`, `JWT_AUDIENCE` em `src/config/load.config.ts`
     - Adicionar `CORS_ORIGINS` à configuração e validação
     - Atualizar `.env.example` com `CORS_ORIGINS` e `DATABASE_URL`
@@ -31,16 +31,16 @@ Implementação incremental das 24 melhorias técnicas, seguindo a ordem de prio
     - **Property 14: Variáveis de ambiente obrigatórias causam falha na ausência**
     - **Valida: Requisitos 20.1, 20.2**
 
-  - [ ] 1.6 Configurar Helmet para headers de segurança
+  - [-] 1.6 Configurar Helmet para headers de segurança
     - Instalar `helmet` e `@types/helmet`
     - Adicionar `app.use(helmet())` em `src/main.ts`
     - _Requisitos: 2.1, 2.2_
 
-  - [ ] 1.7 Desabilitar Swagger em produção
+  - [-] 1.7 Desabilitar Swagger em produção
     - Envolver configuração do Swagger com condicional `NODE_ENV !== 'production'` em `src/main.ts`
     - _Requisitos: 21.1, 21.2, 21.3_
 
-  - [ ] 1.8 Implementar health check com verificação de banco de dados
+  - [x] 1.8 Implementar health check com verificação de banco de dados
     - Criar `PrismaHealthIndicator` em `src/modules/health/`
     - Executar `$queryRaw(SELECT 1)` com medição de tempo de resposta
     - Registrar no `HealthController`

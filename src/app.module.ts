@@ -13,6 +13,7 @@ import { loadConfig } from './config/load.config';
       load: [loadConfig],
       validate: loadValidation,
       isGlobal: true,
+      cache: true,
     }),
     PrismaModule,
     AuthModule,
