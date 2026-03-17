@@ -128,13 +128,13 @@ Implementação incremental das 24 melhorias técnicas, seguindo a ordem de prio
     - Testar: HttpException → formato correto, Error genérico → 500, ValidationError → 400
     - _Requisitos: 12.1_
 
-- [ ] 8. Performance e Índices
-  - [ ] 8.1 Adicionar índices no schema Prisma
+- [x] 8. Performance e Índices
+  - [x] 8.1 Adicionar índices no schema Prisma
     - Adicionar `@@index([email, deleteAt])` e `@@index([createAt])` no modelo User
     - Gerar migration
     - _Requisitos: 15.1, 15.2, 15.3_
 
-  - [ ] 8.2 Configurar path aliases no TypeScript
+  - [x] 8.2 Configurar path aliases no TypeScript
     - Adicionar `paths` no `tsconfig.json`: `@modules/*`, `@config/*`, `@generated/*`, `@common/*`
     - Configurar `moduleNameMapper` no Jest (package.json e jest-e2e.json)
     - Atualizar imports existentes para usar aliases

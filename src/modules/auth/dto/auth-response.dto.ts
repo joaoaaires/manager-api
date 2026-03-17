@@ -1,7 +1,7 @@
 import { Expose, plainToInstance } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { UserModel } from '../../../generated/prisma/models';
+import { UserModel } from '@generated/prisma/models';
 
 export class AuthResponseDto {
   @ApiProperty({ example: 'b3909d91-3cbd-49cf-8c87-859d417fc18b' })

@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 
 import { UserService } from './user.service';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '@modules/prisma/prisma.service';
 import { EmailAlreadyExistsException } from './errors/email-already-exists.exception';
 import { UserNotFoundException } from './errors/user-not-found.exception';
 

@@ -19,4 +19,7 @@ model User {
   createAt DateTime  @default(now())
   updateAt DateTime  @updatedAt
   deleteAt DateTime?
+
+  @@index([email, deleteAt])
+  @@index([createAt])
 }

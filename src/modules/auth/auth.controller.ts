@@ -11,10 +11,10 @@ import { Throttle } from '@nestjs/throttler';
 
 import { AuthService } from './auth.service';
 import { AuthResponseDto, SignInDto, SignUpDto } from './dto';
-import { UserResponseDto } from '../user/dto';
+import { UserResponseDto } from '@modules/user/dto';
 import { AuthGuard } from './auth.guard';
 import type { AuthenticatedRequest } from './interfaces';
-import { UserService } from '../user/user.service';
+import { UserService } from '@modules/user/user.service';
 
 @Controller()
 export class AuthController {

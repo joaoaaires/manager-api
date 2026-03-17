@@ -4,8 +4,8 @@ import * as bcrypt from 'bcrypt';
 
 import { EmailAlreadyExistsException, UserNotFoundException } from './errors';
 import { CreateUserDto } from './dto';
-import { PrismaService } from '../prisma/prisma.service';
-import { Prisma } from '../../generated/prisma/browser';
+import { PrismaService } from '@modules/prisma/prisma.service';
+import { Prisma } from '@generated/prisma/browser';
 
 @Injectable()
 export class UserService {
