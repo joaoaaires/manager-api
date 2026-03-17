@@ -3282,6 +3282,13 @@ fast-check@^3.23.1:
   dependencies:
     pure-rand "^6.1.0"
 
+fast-check@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/fast-check/-/fast-check-4.6.0.tgz#8b1238baf4e1152b4eeb9882f075463b48200e5b"
+  integrity sha512-h7H6Dm0Fy+H4ciQYFxFjXnXkzR2kr9Fb22c0UBpHnm59K2zpr2t13aPTHlltFiNT6zuxp6HMPAVVvgur4BLdpA==
+  dependencies:
+    pure-rand "^8.0.0"
+
 fast-copy@^4.0.0:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/fast-copy/-/fast-copy-4.0.2.tgz#57f14115e1edbec274f69090072a480aa29cbedd"
@@ -5252,6 +5259,11 @@ pure-rand@^7.0.0:
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/pure-rand/-/pure-rand-7.0.1.tgz#6f53a5a9e3e4a47445822af96821ca509ed37566"
   integrity sha512-oTUZM/NAZS8p7ANR3SHh30kXB+zK2r2BPcEn/awJIbOvq82WoMN4p62AWWp3Hhw50G0xMsw1mhIBLqHw64EcNQ==
+
+pure-rand@^8.0.0:
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/pure-rand/-/pure-rand-8.2.0.tgz#553ff5b1e90cb8ba2e2d282b9dfd6a833ac91efe"
+  integrity sha512-KHnUjm68KSO/hqpWlVwagMDPrIjnDNY9r0DbKN79xEa5RU2MLUe0lICBGpWDF8cwmhUiN8r9A8DLGPVcFB62/A==
 
 qs@^6.14.0, qs@^6.14.1:
   version "6.15.0"

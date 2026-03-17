@@ -109,20 +109,20 @@ Implementação incremental das 24 melhorias técnicas, seguindo a ordem de prio
 - [x] 6. Checkpoint — Verificar segurança e qualidade
   - Garantir que todos os testes passam. Perguntar ao usuário se há dúvidas.
 
-- [ ] 7. Testes Unitários dos Services
-  - [ ] 7.1 Criar testes unitários do UserService
+- [x] 7. Testes Unitários dos Services
+  - [x] 7.1 Criar testes unitários do UserService
     - Criar `src/modules/user/user.service.spec.ts`
     - Testar: criação com sucesso, e-mail duplicado → exceção, busca por ID OK, ID inexistente → exceção, softDelete OK
     - Mockar PrismaService
     - _Requisitos: 12.1, 12.3_
 
-  - [ ] 7.2 Criar testes unitários do AuthService
+  - [x] 7.2 Criar testes unitários do AuthService
     - Criar `src/modules/auth/auth.service.spec.ts`
     - Testar: registro OK, login OK, senha inválida → exceção, e-mail inexistente → exceção, soft-deleted user → exceção
     - Mockar UserService e JwtService
     - _Requisitos: 12.1, 12.2_
 
-  - [ ] 7.3 Instalar fast-check e criar testes unitários do GlobalExceptionFilter
+  - [x] 7.3 Instalar fast-check e criar testes unitários do GlobalExceptionFilter
     - Instalar `fast-check` como devDependency
     - Criar `src/common/filters/global-exception.filter.spec.ts`
     - Testar: HttpException → formato correto, Error genérico → 500, ValidationError → 400
