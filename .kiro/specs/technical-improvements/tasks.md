@@ -46,7 +46,7 @@ Implementação incremental das 24 melhorias técnicas, seguindo a ordem de prio
     - Registrar no `HealthController`
     - _Requisitos: 9.1, 9.2, 9.3_
 
-- [ ] 2. Checkpoint — Verificar quick wins
+- [x] 2. Checkpoint — Verificar quick wins
   - Garantir que o projeto compila e inicia sem erros. Perguntar ao usuário se há dúvidas.
 
 - [ ] 3. Segurança — CORS e Rate Limiting

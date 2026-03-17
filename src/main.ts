@@ -27,7 +27,9 @@ async function bootstrap() {
   if (process.env.NODE_ENV !== 'production') {
     const swaggerConfig = new DocumentBuilder()
       .setTitle('Manager API')
-      .setDescription('API documentation for authentication and user management.')
+      .setDescription(
+        'API documentation for authentication and user management.',
+      )
       .setVersion('1.0.0')
       .addBearerAuth(
         {
