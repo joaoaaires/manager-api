@@ -67,8 +67,8 @@ Implementação incremental das 24 melhorias técnicas, seguindo a ordem de prio
     - Customizar mensagem 429 em pt-BR no GlobalExceptionFilter
     - _Requisitos: 3.1, 3.2, 3.3_
 
-- [ ] 4. Arquitetura — Exception Filter e Logging
-  - [ ] 4.1 Criar Global Exception Filter
+- [x] 4. Arquitetura — Exception Filter e Logging
+  - [x] 4.1 Criar Global Exception Filter
     - Criar `src/common/filters/global-exception.filter.ts` com `@Catch()`
     - Tratar `HttpException` retornando `statusCode`, `message`, `error`, `timestamp`
     - Tratar exceções não-HTTP retornando 500 com mensagem genérica em pt-BR
@@ -79,7 +79,7 @@ Implementação incremental das 24 melhorias técnicas, seguindo a ordem de prio
     - **Property 5: Global Exception Filter formata exceções HTTP**
     - **Valida: Requisitos 6.1, 6.2**
 
-  - [ ] 4.3 Implementar logging estruturado com Pino
+  - [x] 4.3 Implementar logging estruturado com Pino
     - Instalar `nestjs-pino` e `pino-pretty` (dev)
     - Configurar `LoggerModule.forRoot()` no `AppModule`
     - Substituir `console.log` em `main.ts` pelo Logger do NestJS

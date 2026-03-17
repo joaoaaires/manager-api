@@ -1,12 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import { Logger as PinoLogger } from 'nestjs-pino';
 import helmet from 'helmet';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  app.useLogger(app.get(PinoLogger));
 
   // security headers
   app.use(helmet());
@@ -58,6 +60,8 @@ async function bootstrap() {
   // setup port with .env
   const port = configService.getOrThrow<number>('port');
   await app.listen(port);
-  console.log(`Server start on ${port} port.`);
+
+  const logger = new Logger('Bootstrap');
+  logger.log(`Server start on ${port} port.`);
 }
 void bootstrap();
