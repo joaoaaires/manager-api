@@ -86,8 +86,8 @@ Implementação incremental das 24 melhorias técnicas, seguindo a ordem de prio
     - Integrar logging no GlobalExceptionFilter para stack traces
     - _Requisitos: 7.1, 7.2, 7.3, 7.4_
 
-- [ ] 5. Segurança e Qualidade — Validação e Soft Delete
-  - [ ] 5.1 Fortalecer validação de senha com regex de complexidade
+- [-] 5. Segurança e Qualidade — Validação e Soft Delete
+  - [x] 5.1 Fortalecer validação de senha com regex de complexidade
     - Substituir `@MinLength(6)` por `@Matches` com regex `^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$` em `CreateUserDto`
     - Atualizar mensagem de erro em pt-BR
     - _Requisitos: 4.1, 4.2, 4.3_
@@ -96,7 +96,7 @@ Implementação incremental das 24 melhorias técnicas, seguindo a ordem de prio
     - **Property 4: Validação de complexidade de senha**
     - **Valida: Requisitos 4.1**
 
-  - [ ] 5.3 Implementar soft delete consistente no UserService
+  - [x] 5.3 Implementar soft delete consistente no UserService
     - Adicionar `deleteAt: null` em todas as cláusulas `where` de leitura (`readOneByEmail`, `readOneById`, `create` check)
     - Implementar método `softDelete(id)` que preenche `deleteAt` com data atual
     - Garantir que login de usuário soft-deleted lança `UserUnauthorizedException`
@@ -106,7 +106,7 @@ Implementação incremental das 24 melhorias técnicas, seguindo a ordem de prio
     - **Property 7: Soft delete exclui usuário das consultas de leitura**
     - **Valida: Requisitos 11.1, 11.3**
 
-- [ ] 6. Checkpoint — Verificar segurança e qualidade
+- [x] 6. Checkpoint — Verificar segurança e qualidade
   - Garantir que todos os testes passam. Perguntar ao usuário se há dúvidas.
 
 - [ ] 7. Testes Unitários dos Services

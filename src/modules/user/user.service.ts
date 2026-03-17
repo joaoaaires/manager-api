@@ -15,9 +15,10 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findFirst({
       where: {
         email: createUserDto.email,
+        deleteAt: null,
       },
     });
 
@@ -40,9 +41,10 @@ export class UserService {
   }
 
   async readOneByEmail(email: string) {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findFirst({
       where: {
         email,
+        deleteAt: null,
       },
     });
     if (!user) {
@@ -52,14 +54,23 @@ export class UserService {
   }
 
   async readOneById(id: string) {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findFirst({
       where: {
         id,
+        deleteAt: null,
       },
     });
     if (!user) {
       throw new UserNotFoundException();
     }
     return user;
+  }
+
+  async softDelete(id: string) {
+    await this.readOneById(id);
+    return this.prisma.user.update({
+      where: { id },
+      data: { deleteAt: new Date() },
+    });
   }
 }
