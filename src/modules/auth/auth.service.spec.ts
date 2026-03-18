@@ -104,9 +104,7 @@ describe('AuthService', () => {
     });
 
     it('should throw UserNotFoundException when email does not exist', async () => {
-      userService.readOneByEmail.mockRejectedValue(
-        new UserNotFoundException(),
-      );
+      userService.readOneByEmail.mockRejectedValue(new UserNotFoundException());
 
       await expect(service.access(signInDto)).rejects.toThrow(
         UserNotFoundException,
@@ -114,9 +112,7 @@ describe('AuthService', () => {
     });
 
     it('should throw UserNotFoundException for soft-deleted user', async () => {
-      userService.readOneByEmail.mockRejectedValue(
-        new UserNotFoundException(),
-      );
+      userService.readOneByEmail.mockRejectedValue(new UserNotFoundException());
 
       await expect(service.access(signInDto)).rejects.toThrow(
         UserNotFoundException,

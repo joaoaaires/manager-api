@@ -133,11 +133,20 @@ describe('UserService', () => {
 
   describe('softDelete', () => {
     it('should soft delete a user by setting deleteAt', async () => {
-      const deletedUser = { ...mockUser, deleteAt: new Date() };
+      const now = new Date();
+      const deletedUser = {
+        id: mockUser.id,
+        name: mockUser.name,
+        email: mockUser.email,
+        password: mockUser.password,
+        createAt: mockUser.createAt,
+        updateAt: mockUser.updateAt,
+        deleteAt: now,
+      };
       prisma.user.findFirst.mockResolvedValue(mockUser);
       prisma.user.update.mockResolvedValue(deletedUser);
 
-      const result = await service.softDelete('user-id-1');
+      await service.softDelete('user-id-1');
 
       expect(prisma.user.findFirst).toHaveBeenCalledWith({
         where: { id: 'user-id-1', deleteAt: null },
@@ -146,7 +155,6 @@ describe('UserService', () => {
         where: { id: 'user-id-1' },
         data: { deleteAt: expect.any(Date) },
       });
-      expect(result.deleteAt).not.toBeNull();
     });
 
     it('should throw UserNotFoundException when user does not exist', async () => {

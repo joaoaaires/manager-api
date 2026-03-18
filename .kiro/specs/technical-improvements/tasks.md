@@ -140,7 +140,7 @@ Implementação incremental das 24 melhorias técnicas, seguindo a ordem de prio
     - Atualizar imports existentes para usar aliases
     - _Requisitos: 22.1, 22.2, 22.3_
 
-- [ ] 9. Strict TypeScript
+- [-] 9. Strict TypeScript
   - [ ] 9.1 Ativar strict mode no TypeScript e ESLint
     - Configurar `noImplicitAny: true` e `strictBindCallApply: true` no `tsconfig.json`
     - Alterar `@typescript-eslint/no-explicit-any` de `off` para `error` no `eslint.config.mjs`
