@@ -140,14 +140,14 @@ Implementação incremental das 24 melhorias técnicas, seguindo a ordem de prio
     - Atualizar imports existentes para usar aliases
     - _Requisitos: 22.1, 22.2, 22.3_
 
-- [-] 9. Strict TypeScript
-  - [ ] 9.1 Ativar strict mode no TypeScript e ESLint
+- [x] 9. Strict TypeScript
+  - [x] 9.1 Ativar strict mode no TypeScript e ESLint
     - Configurar `noImplicitAny: true` e `strictBindCallApply: true` no `tsconfig.json`
     - Alterar `@typescript-eslint/no-explicit-any` de `off` para `error` no `eslint.config.mjs`
     - Corrigir todos os erros de tipagem resultantes no código-fonte
     - _Requisitos: 5.1, 5.2, 5.3_
 
-- [ ] 10. Checkpoint — Verificar performance e tipagem
+- [x] 10. Checkpoint — Verificar performance e tipagem
   - Garantir que todos os testes passam e o lint não reporta erros. Perguntar ao usuário se há dúvidas.
 
 - [ ] 11. Repository Pattern

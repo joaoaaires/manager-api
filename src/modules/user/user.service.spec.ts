@@ -153,6 +153,7 @@ describe('UserService', () => {
       });
       expect(prisma.user.update).toHaveBeenCalledWith({
         where: { id: 'user-id-1' },
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         data: { deleteAt: expect.any(Date) },
       });
     });
