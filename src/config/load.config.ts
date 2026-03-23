@@ -7,4 +7,5 @@ export const loadConfig = () => ({
   jwtIssuer: process.env.JWT_ISSUER,
   jwtAudience: process.env.JWT_AUDIENCE,
   corsOrigins: process.env.CORS_ORIGINS,
+  metricsEnabled: process.env.METRICS_ENABLED === 'true',
 });

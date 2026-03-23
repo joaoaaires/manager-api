@@ -23,13 +23,48 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+**Manager API** — NestJS service for authentication and user management (JWT, Prisma, PostgreSQL). API docs: `/docs` (non-production). Structured logging via Pino; security headers via Helmet.
+
+### Quick start
+
+1. Copy `.env.example` → `.env` and adjust values.
+2. Start PostgreSQL, e.g. `docker compose up -d`.
+3. Run migrations: `yarn prisma migrate deploy` (or `yarn db:migrate:dev` during development).
+4. `yarn start:dev`
+5. Check `GET /health` — expect `{ "status": "ok" }`. Responses include `X-Request-Id` (or echo your `X-Request-Id` / `X-Correlation-Id` header for tracing).
+
+### Required environment variables
+
+| Variable         | Purpose                                      |
+| ---------------- | -------------------------------------------- |
+| `PORT`           | HTTP port                                    |
+| `DATABASE_URL`   | App / Prisma client connection string        |
+| `DIRECT_URL`     | URL for Prisma Migrate (often same as above) |
+| `SALT`           | Bcrypt cost (integer **4–15**)               |
+| `SECRET`         | JWT signing secret                           |
+| `JWT_*`          | Expiry, issuer, audience                     |
+| `CORS_ORIGINS`   | Comma-separated allowed origins              |
+| `METRICS_ENABLED` | Set `true` to expose Prometheus default metrics at `GET /metrics` (protect in production — network policy or auth) |
+
+See `.env.example` for a template.
+
+### Integration tests
+
+With PostgreSQL running and a valid `.env`:
+
+```bash
+yarn test:integration
+```
+
+(`RUN_INTEGRATION_TESTS=1` is set by the script; requires the same variables as the app.)
 
 ## Project setup
 
 ```bash
 $ yarn install
 ```
+
+`postinstall` runs `prisma generate` only. Run migrations explicitly in each environment (`yarn prisma migrate deploy` in CI/CD).
 
 ## Compile and run the project
 

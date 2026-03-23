@@ -1,10 +1,14 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
-import { Logger as PinoLogger } from 'nestjs-pino';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
+import { Logger as PinoLogger } from 'nestjs-pino';
+import type { Application, Request, Response } from 'express';
+import * as promClient from 'prom-client';
+
+import { applyCorrelationMiddleware } from '@common/middleware/correlation.middleware';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
@@ -12,6 +16,8 @@ async function bootstrap() {
 
   // security headers
   app.use(helmet());
+
+  applyCorrelationMiddleware(app);
 
   // CORS configuration
   const configService = app.get(ConfigService);
@@ -33,6 +39,15 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
+
+  if (configService.get<boolean>('metricsEnabled') === true) {
+    promClient.collectDefaultMetrics();
+    const server = app.getHttpAdapter().getInstance() as Application;
+    server.get('/metrics', async (_req: Request, res: Response) => {
+      res.setHeader('Content-Type', promClient.register.contentType);
+      res.send(await promClient.register.metrics());
+    });
+  }
 
   // setup swagger (disabled in production)
   if (process.env.NODE_ENV !== 'production') {
@@ -62,6 +77,6 @@ async function bootstrap() {
   await app.listen(port);
 
   const logger = new Logger('Bootstrap');
-  logger.log(`Server start on ${port} port.`);
+  logger.log(`Server listening on port ${port}`);
 }
 void bootstrap();

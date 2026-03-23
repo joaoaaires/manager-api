@@ -16,10 +16,21 @@ const getPositiveNumber = (env: Env, key: string): number => {
   return value;
 };
 
+/** Bcrypt cost factor; 4–15 per security policy (OWASP-friendly range). */
+const getBcryptRounds = (env: Env, key: string): number => {
+  const n = getPositiveNumber(env, key);
+  if (!Number.isInteger(n) || n < 4 || n > 15) {
+    throw new Error(
+      `Environment variable ${key} must be an integer bcrypt cost between 4 and 15`,
+    );
+  }
+  return n;
+};
+
 export const loadValidation = (env: Env): Env => {
   getPositiveNumber(env, 'PORT');
   getString(env, 'DATABASE_URL');
-  getPositiveNumber(env, 'SALT');
+  getBcryptRounds(env, 'SALT');
   getString(env, 'SECRET');
   getPositiveNumber(env, 'JWT_EXPIRES_IN');
   getString(env, 'JWT_ISSUER');

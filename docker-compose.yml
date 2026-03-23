@@ -1,0 +1,16 @@
+# Local PostgreSQL for Manager API (see README onboarding).
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: manager_api
+    ports:
+      - '5432:5432'
+    volumes:
+      - manager_api_pgdata:/var/lib/postgresql/data
+
+volumes:
+  manager_api_pgdata:
