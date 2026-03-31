@@ -14,14 +14,10 @@ import { AuthResponseDto, SignInDto, SignUpDto } from './dto';
 import { UserResponseDto } from '@modules/user/dto';
 import { AuthGuard } from './auth.guard';
 import type { AuthenticatedRequest } from './interfaces';
-import { UserService } from '@modules/user/user.service';
 
 @Controller()
 export class AuthController {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   @ApiOperation({ summary: 'Register a new user account' })
   @ApiCreatedResponse({
@@ -62,7 +58,7 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Get('profile')
   async profile(@Req() request: AuthenticatedRequest) {
-    const user = await this.userService.readOneById(request.user.id);
+    const user = await this.authService.getProfile(request.user.id);
     return UserResponseDto.fromEntity(user);
   }
 }

@@ -1,13 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigService } from '@nestjs/config';
-import * as bcrypt from 'bcrypt';
 
+import { PasswordHasher } from '@common/crypto/password-hasher.service';
 import { UserService } from './user.service';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { EmailAlreadyExistsException } from './errors/email-already-exists.exception';
 import { UserNotFoundException } from './errors/user-not-found.exception';
-
-jest.mock('bcrypt');
 
 const mockUser = {
   id: 'user-id-1',
@@ -28,7 +25,7 @@ describe('UserService', () => {
       update: jest.Mock;
     };
   };
-  let configService: { getOrThrow: jest.Mock };
+  let passwordHasher: { hash: jest.Mock };
 
   beforeEach(async () => {
     prisma = {
@@ -38,13 +35,13 @@ describe('UserService', () => {
         update: jest.fn(),
       },
     };
-    configService = { getOrThrow: jest.fn().mockReturnValue(10) };
+    passwordHasher = { hash: jest.fn().mockResolvedValue('hashed-password') };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
         { provide: PrismaService, useValue: prisma },
-        { provide: ConfigService, useValue: configService },
+        { provide: PasswordHasher, useValue: passwordHasher },
       ],
     }).compile();
 
@@ -60,7 +57,6 @@ describe('UserService', () => {
 
     it('should create a user successfully', async () => {
       prisma.user.findFirst.mockResolvedValue(null);
-      (bcrypt.hash as jest.Mock).mockResolvedValue('hashed-password');
       prisma.user.create.mockResolvedValue(mockUser);
 
       const result = await service.create(createUserDto);
@@ -68,7 +64,7 @@ describe('UserService', () => {
       expect(prisma.user.findFirst).toHaveBeenCalledWith({
         where: { email: createUserDto.email, deleteAt: null },
       });
-      expect(bcrypt.hash).toHaveBeenCalledWith(createUserDto.password, 10);
+      expect(passwordHasher.hash).toHaveBeenCalledWith(createUserDto.password);
       expect(prisma.user.create).toHaveBeenCalledWith({
         data: {
           name: createUserDto.name,

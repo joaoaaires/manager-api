@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import * as bcrypt from 'bcrypt';
 
+import { PasswordHasher } from '@common/crypto/password-hasher.service';
 import { EmailAlreadyExistsException, UserNotFoundException } from './errors';
 import { CreateUserDto } from './dto';
 import { PrismaService } from '@modules/prisma/prisma.service';
@@ -11,7 +10,7 @@ import { Prisma } from '@generated/prisma/browser';
 export class UserService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly configService: ConfigService,
+    private readonly passwordHasher: PasswordHasher,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -26,8 +25,9 @@ export class UserService {
       throw new EmailAlreadyExistsException();
     }
 
-    const salt = this.configService.getOrThrow<number>('salt');
-    const passwordCrypt = await bcrypt.hash(createUserDto.password, salt);
+    const passwordCrypt = await this.passwordHasher.hash(
+      createUserDto.password,
+    );
 
     const data: Prisma.UserCreateInput = {
       name: createUserDto.name,

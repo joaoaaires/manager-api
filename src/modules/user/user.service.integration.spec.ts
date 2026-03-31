@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
+import { CryptoModule } from '@common/crypto/crypto.module';
 import { loadConfig } from '@config/load.config';
 import { loadValidation } from '@config/load.validation';
 import { PrismaModule } from '@modules/prisma/prisma.module';
@@ -29,6 +30,7 @@ const runIntegration = process.env.RUN_INTEGRATION_TESTS === '1';
             cache: true,
           }),
           PrismaModule,
+          CryptoModule,
         ],
         providers: [UserService],
       }).compile();

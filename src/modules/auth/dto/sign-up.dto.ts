@@ -1,3 +1,4 @@
-import { CreateUserDto } from '@modules/user/dto/create-user.dto';
+import { UserRegistrationDto } from '@common/dto/user-registration.dto';
 
-export class SignUpDto extends CreateUserDto {}
+/** Corpo de registro público; validação compartilhada com `CreateUserDto` via `UserRegistrationDto`. */
+export class SignUpDto extends UserRegistrationDto {}

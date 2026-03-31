@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
 
+import { PasswordHasher } from '@common/crypto/password-hasher.service';
 import { UserService } from '@modules/user/user.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
@@ -13,6 +13,7 @@ export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
+    private readonly passwordHasher: PasswordHasher,
   ) {}
 
   public async register(signUpDto: SignUpDto) {
@@ -27,7 +28,10 @@ export class AuthService {
   public async access(signInDto: SignInDto) {
     const user = await this.userService.readOneByEmail(signInDto.email);
 
-    const validation = await bcrypt.compare(signInDto.password, user.password);
+    const validation = await this.passwordHasher.verify(
+      signInDto.password,
+      user.password,
+    );
     if (!validation) {
       throw new UserUnauthorizedException();
     }
@@ -36,5 +40,9 @@ export class AuthService {
     const accessToken = await this.jwtService.signAsync(payload);
 
     return AuthResponseDto.fromEntity(user, accessToken);
+  }
+
+  public async getProfile(userId: string) {
+    return this.userService.readOneById(userId);
   }
 }
