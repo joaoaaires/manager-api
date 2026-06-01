@@ -24,6 +24,10 @@ export class AuthResponseDto {
   @Expose()
   updateAt!: string;
 
+  @ApiProperty({ example: 'tenant_a1b2c3d4' })
+  @Expose()
+  tenant_name!: string;
+
   @ApiProperty({
     description: 'JWT access token.',
     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example.signature',

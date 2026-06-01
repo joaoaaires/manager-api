@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { randomBytes } from 'crypto';
 import * as bcrypt from 'bcrypt';
 
 import { EmailAlreadyExistsException, UserNotFoundException } from './errors';
@@ -13,6 +14,11 @@ export class UserService {
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
   ) {}
+
+  private generateTenantName(): string {
+    const suffix = randomBytes(4).toString('hex');
+    return `tenant_${suffix}`;
+  }
 
   async create(createUserDto: CreateUserDto) {
     const user = await this.prisma.user.findUnique({
@@ -28,10 +34,15 @@ export class UserService {
     const salt = this.configService.getOrThrow<number>('salt');
     const passwordCrypt = await bcrypt.hash(createUserDto.password, salt);
 
+    const tenantName = this.generateTenantName();
+
+    await this.prisma.$executeRawUnsafe(`CREATE SCHEMA "${tenantName}"`);
+
     const data: Prisma.UserCreateInput = {
       name: createUserDto.name,
       email: createUserDto.email,
       password: passwordCrypt,
+      tenant_name: tenantName,
     };
 
     return this.prisma.user.create({
