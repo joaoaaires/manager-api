@@ -1,28 +1,26 @@
+import { z } from 'zod';
+
 type Env = Record<string, unknown>;
 
-const getString = (env: Env, key: string): string => {
-  const value = env[key];
-  if (typeof value !== 'string' || value.trim().length === 0) {
-    throw new Error(`Missing or invalid environment variable: ${key}`);
-  }
-  return value;
-};
-
-const getPositiveNumber = (env: Env, key: string): number => {
-  const value = Number(getString(env, key));
-  if (!Number.isFinite(value) || value <= 0) {
-    throw new Error(`Environment variable must be a positive number: ${key}`);
-  }
-  return value;
-};
+const envSchema = z.object({
+  PORT: z.coerce.number().positive(),
+  DATABASE_URL: z.string().min(1),
+  SALT: z.coerce.number().positive(),
+  SECRET: z.string().min(1),
+  JWT_EXPIRES_IN: z.coerce.number().positive(),
+  JWT_ISSUER: z.string().min(1),
+  JWT_AUDIENCE: z.string().min(1),
+});
 
 export const loadValidation = (env: Env): Env => {
-  getPositiveNumber(env, 'PORT');
-  getString(env, 'DATABASE_URL');
-  getPositiveNumber(env, 'SALT');
-  getString(env, 'SECRET');
-  getPositiveNumber(env, 'JWT_EXPIRES_IN');
-  getString(env, 'JWT_ISSUER');
-  getString(env, 'JWT_AUDIENCE');
-  return env;
+  const result = envSchema.safeParse(env);
+
+  if (!result.success) {
+    const errors = result.error.issues
+      .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
+      .join(', ');
+    throw new Error(`Environment variable validation failed: ${errors}`);
+  }
+
+  return result.data as unknown as Env;
 };
