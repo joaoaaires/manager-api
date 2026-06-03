@@ -1,18 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { randomBytes } from 'crypto';
 import * as bcrypt from 'bcrypt';
+import { randomBytes } from 'crypto';
 
-import { EmailAlreadyExistsException, UserNotFoundException } from './errors';
-import { CreateUserDto } from './dto';
-import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '../../generated/prisma/browser';
+import { PrismaService } from '../prisma/prisma.service';
+import { TenantProvisioningService } from '../tenant/tenant-provisioning.service';
+import { CreateUserDto } from './dto';
+import { EmailAlreadyExistsException, UserNotFoundException } from './errors';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
+    private readonly provisioningService: TenantProvisioningService,
   ) {}
 
   private generateTenantName(): string {
@@ -36,7 +38,16 @@ export class UserService {
 
     const tenantName = this.generateTenantName();
 
-    await this.prisma.$executeRawUnsafe(`CREATE SCHEMA "${tenantName}"`);
+    try {
+      await this.prisma.$executeRawUnsafe(`CREATE SCHEMA "${tenantName}"`);
+      await this.provisioningService.provisionTenant(tenantName);
+    } catch (error) {
+      // If provisioning fails, ensure we cleanup the schema to avoid "Incomplete" tenants
+      await this.prisma.$executeRawUnsafe(
+        `DROP SCHEMA IF EXISTS "${tenantName}" CASCADE`,
+      );
+      throw error;
+    }
 
     const data: Prisma.UserCreateInput = {
       name: createUserDto.name,

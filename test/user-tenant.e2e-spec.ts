@@ -55,6 +55,15 @@ describe('User Tenant Schema (e2e)', () => {
     
     expect(schemaExists).toHaveLength(1);
 
+    // Verify 'notes' table exists
+    const tableExists = await prisma.$queryRawUnsafe(`
+      SELECT table_name 
+      FROM information_schema.tables 
+      WHERE table_schema = '${user.tenant_name}' 
+      AND table_name = 'notes'
+    `);
+    expect(tableExists).toHaveLength(1);
+
     // Cleanup: Drop the created schema
     await prisma.$executeRawUnsafe(`DROP SCHEMA "${user.tenant_name}" CASCADE`);
   });
