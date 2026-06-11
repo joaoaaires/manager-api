@@ -10,6 +10,7 @@ const envSchema = z.object({
   JWT_EXPIRES_IN: z.coerce.number().positive(),
   JWT_ISSUER: z.string().min(1),
   JWT_AUDIENCE: z.string().min(1),
+  CORS_ORIGIN: z.string().min(1).optional(),
 });
 
 export const loadValidation = (env: Env): Env => {

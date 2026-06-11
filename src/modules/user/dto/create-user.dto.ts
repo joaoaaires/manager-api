@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, MaxLength, MinLength } from 'class-validator';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -19,8 +19,10 @@ export class CreateUserDto {
   @ApiProperty({
     example: 'secret123',
     minLength: 6,
+    maxLength: 72,
     description: 'User plain-text password.',
   })
   @MinLength(6, { message: 'A senha precisa ter pelo menos 6 caracteres.' })
+  @MaxLength(72, { message: 'A senha pode ter no máximo 72 caracteres.' })
   password!: string;
 }

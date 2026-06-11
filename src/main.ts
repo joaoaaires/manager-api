@@ -1,11 +1,23 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import helmet from 'helmet';
 
 async function bootstrap() {
+  const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
+
+  // close database connections on SIGTERM/SIGINT and app.close()
+  app.enableShutdownHooks();
+
+  // setup security headers and cors
+  app.use(helmet());
+  app.enableCors({
+    origin: configService.getOrThrow<string>('corsOrigin'),
+  });
 
   // setup validation params
   app.useGlobalPipes(
@@ -36,9 +48,8 @@ async function bootstrap() {
   });
 
   // setup port with .env
-  const configService = app.get(ConfigService);
   const port = configService.getOrThrow<number>('port');
   await app.listen(port);
-  console.log(`Server start on ${port} port.`);
+  logger.log(`Server start on ${port} port.`);
 }
 void bootstrap();

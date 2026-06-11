@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 
-import { Prisma } from '../../generated/prisma/browser';
+import { Prisma } from '../../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { TenantProvisioningService } from '../tenant/tenant-provisioning.service';
 import { CreateUserDto } from './dto';
@@ -58,14 +58,24 @@ export class UserService {
       await this.prisma.$executeRawUnsafe(
         `DROP SCHEMA IF EXISTS "${tenantName}" CASCADE`,
       );
+
+      // Unique constraint violated by a concurrent sign-up with the same email
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new EmailAlreadyExistsException();
+      }
+
       throw error;
     }
   }
 
   async readOneByEmail(email: string) {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findFirst({
       where: {
         email,
+        deleteAt: null,
       },
     });
     if (!user) {
@@ -75,9 +85,10 @@ export class UserService {
   }
 
   async readOneById(id: string) {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findFirst({
       where: {
         id,
+        deleteAt: null,
       },
     });
     if (!user) {

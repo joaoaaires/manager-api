@@ -2,10 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 
+import { Prisma } from '../../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { TenantProvisioningService } from '../tenant/tenant-provisioning.service';
 import { UserService } from './user.service';
-import { EmailAlreadyExistsException } from './errors';
+import { EmailAlreadyExistsException, UserNotFoundException } from './errors';
 
 describe('UserService', () => {
   let service: UserService;
@@ -13,6 +14,7 @@ describe('UserService', () => {
   const prismaMock = {
     user: {
       findUnique: jest.fn(),
+      findFirst: jest.fn(),
       create: jest.fn(),
     },
     $executeRawUnsafe: jest.fn(),
@@ -116,6 +118,61 @@ describe('UserService', () => {
           /^DROP SCHEMA IF EXISTS "tenant_[0-9a-f]{8}" CASCADE$/,
         ),
       );
+    });
+
+    it('maps P2002 to EmailAlreadyExistsException after dropping the schema', async () => {
+      const uniqueViolation = new Prisma.PrismaClientKnownRequestError(
+        'Unique constraint failed on the fields: (`email`)',
+        { code: 'P2002', clientVersion: 'test' },
+      );
+      prismaMock.user.findUnique.mockResolvedValue(null);
+      prismaMock.$executeRawUnsafe.mockResolvedValue(0);
+      provisioningServiceMock.provisionTenant.mockResolvedValue(undefined);
+      prismaMock.user.create.mockRejectedValue(uniqueViolation);
+
+      await expect(service.create(createUserDto)).rejects.toBeInstanceOf(
+        EmailAlreadyExistsException,
+      );
+      expect(prismaMock.$executeRawUnsafe).toHaveBeenCalledWith(
+        expect.stringMatching(
+          /^DROP SCHEMA IF EXISTS "tenant_[0-9a-f]{8}" CASCADE$/,
+        ),
+      );
+    });
+  });
+
+  describe('readOneByEmail', () => {
+    it('excludes soft-deleted users from the lookup', async () => {
+      prismaMock.user.findFirst.mockResolvedValue(null);
+
+      await expect(
+        service.readOneByEmail('john@example.com'),
+      ).rejects.toBeInstanceOf(UserNotFoundException);
+      expect(prismaMock.user.findFirst).toHaveBeenCalledWith({
+        where: { email: 'john@example.com', deleteAt: null },
+      });
+    });
+
+    it('returns an active user', async () => {
+      const user = { id: 'user-id', email: 'john@example.com' };
+      prismaMock.user.findFirst.mockResolvedValue(user);
+
+      await expect(service.readOneByEmail('john@example.com')).resolves.toBe(
+        user,
+      );
+    });
+  });
+
+  describe('readOneById', () => {
+    it('excludes soft-deleted users from the lookup', async () => {
+      prismaMock.user.findFirst.mockResolvedValue(null);
+
+      await expect(service.readOneById('user-id')).rejects.toBeInstanceOf(
+        UserNotFoundException,
+      );
+      expect(prismaMock.user.findFirst).toHaveBeenCalledWith({
+        where: { id: 'user-id', deleteAt: null },
+      });
     });
   });
 });

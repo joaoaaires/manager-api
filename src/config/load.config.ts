@@ -6,4 +6,5 @@ export const loadConfig = () => ({
   jwtExpiresIn: Number(process.env.JWT_EXPIRES_IN ?? 86400),
   jwtIssuer: process.env.JWT_ISSUER ?? 'manager-api',
   jwtAudience: process.env.JWT_AUDIENCE ?? 'manager-api-clients',
+  corsOrigin: process.env.CORS_ORIGIN ?? '*',
 });
