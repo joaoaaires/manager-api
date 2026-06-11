@@ -43,28 +43,33 @@ describe('User Tenant Schema (e2e)', () => {
 
     const user = response.body;
     expect(user.email).toBe(email);
-    expect(user.tenant_name).toBeDefined();
-    expect(user.tenant_name).toMatch(/^tenant_[a-f0-9]{8}$/);
+    // tenant_name is no longer exposed in the response; it travels in the JWT
+    expect(user.tenant_name).toBeUndefined();
+
+    const created = await prisma.user.findFirst({ where: { email } });
+    expect(created).not.toBeNull();
+    const tenantName = created!.tenant_name;
+    expect(tenantName).toMatch(/^tenant_[a-f0-9]{8}$/);
 
     // Verify schema exists in DB
     const schemaExists = await prisma.$queryRawUnsafe(`
-      SELECT schema_name 
-      FROM information_schema.schemata 
-      WHERE schema_name = '${user.tenant_name}'
+      SELECT schema_name
+      FROM information_schema.schemata
+      WHERE schema_name = '${tenantName}'
     `);
-    
+
     expect(schemaExists).toHaveLength(1);
 
     // Verify 'notes' table exists
     const tableExists = await prisma.$queryRawUnsafe(`
-      SELECT table_name 
-      FROM information_schema.tables 
-      WHERE table_schema = '${user.tenant_name}' 
+      SELECT table_name
+      FROM information_schema.tables
+      WHERE table_schema = '${tenantName}'
       AND table_name = 'notes'
     `);
     expect(tableExists).toHaveLength(1);
 
     // Cleanup: Drop the created schema
-    await prisma.$executeRawUnsafe(`DROP SCHEMA "${user.tenant_name}" CASCADE`);
+    await prisma.$executeRawUnsafe(`DROP SCHEMA "${tenantName}" CASCADE`);
   });
 });

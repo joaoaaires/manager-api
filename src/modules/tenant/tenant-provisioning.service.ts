@@ -5,8 +5,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-
-const TENANT_NAME_PATTERN = /^[a-z_][a-z0-9_]{0,62}$/;
+import { TENANT_NAME_PATTERN } from './tenant-name.constants';
 
 @Injectable()
 export class TenantProvisioningService {

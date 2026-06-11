@@ -60,7 +60,10 @@ describe('AuthService', () => {
         email: user.email,
         password: 'secret123',
       });
-      expect(jwtServiceMock.signAsync).toHaveBeenCalledWith({ sub: user.id });
+      expect(jwtServiceMock.signAsync).toHaveBeenCalledWith({
+        sub: user.id,
+        tenant: user.tenant_name,
+      });
       expect(result.token).toBe('jwt-token');
       expect(result.email).toBe(user.email);
     });
@@ -77,7 +80,10 @@ describe('AuthService', () => {
       });
 
       expect(userServiceMock.readOneByEmail).toHaveBeenCalledWith(user.email);
-      expect(jwtServiceMock.signAsync).toHaveBeenCalledWith({ sub: user.id });
+      expect(jwtServiceMock.signAsync).toHaveBeenCalledWith({
+        sub: user.id,
+        tenant: user.tenant_name,
+      });
       expect(result.token).toBe('jwt-token');
     });
 
