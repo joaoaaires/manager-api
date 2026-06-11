@@ -1,9 +1,12 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+
+const TENANT_NAME_PATTERN = /^[a-z_][a-z0-9_]{0,62}$/;
 
 @Injectable()
 export class TenantProvisioningService {
@@ -12,6 +15,10 @@ export class TenantProvisioningService {
   constructor(private readonly prisma: PrismaService) {}
 
   async provisionTenant(tenantName: string): Promise<void> {
+    if (!TENANT_NAME_PATTERN.test(tenantName)) {
+      throw new BadRequestException(`Invalid tenant name: ${tenantName}`);
+    }
+
     this.logger.log(`Provisioning tables for tenant: ${tenantName}`);
 
     const ddl = `
@@ -30,12 +37,14 @@ export class TenantProvisioningService {
         `Successfully provisioned tables for tenant: ${tenantName}`,
       );
     } catch (error) {
+      const stack = error instanceof Error ? error.stack : undefined;
+      const message = error instanceof Error ? error.message : String(error);
       this.logger.error(
         `Failed to provision tables for tenant: ${tenantName}`,
-        error.stack,
+        stack,
       );
       throw new InternalServerErrorException(
-        `Failed to provision tenant tables: ${error.message}`,
+        `Failed to provision tenant tables: ${message}`,
       );
     }
   }

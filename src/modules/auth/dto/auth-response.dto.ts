@@ -18,11 +18,11 @@ export class AuthResponseDto {
 
   @ApiProperty({ example: '2026-02-19T12:00:00.000Z' })
   @Expose()
-  createAt!: string;
+  createdAt!: string;
 
   @ApiProperty({ example: '2026-02-19T12:00:00.000Z' })
   @Expose()
-  updateAt!: string;
+  updatedAt!: string;
 
   @ApiProperty({ example: 'tenant_a1b2c3d4' })
   @Expose()

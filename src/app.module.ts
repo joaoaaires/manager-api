@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 
 import { HealthModule } from './modules/health/health.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { UserModule } from './modules/user/user.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { loadValidation } from './config/load.validation';
 import { loadConfig } from './config/load.config';
@@ -16,6 +17,7 @@ import { loadConfig } from './config/load.config';
     }),
     PrismaModule,
     AuthModule,
+    UserModule,
     HealthModule,
   ],
   controllers: [],

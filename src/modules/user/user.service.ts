@@ -38,27 +38,28 @@ export class UserService {
 
     const tenantName = this.generateTenantName();
 
+    await this.prisma.$executeRawUnsafe(`CREATE SCHEMA "${tenantName}"`);
+
     try {
-      await this.prisma.$executeRawUnsafe(`CREATE SCHEMA "${tenantName}"`);
       await this.provisioningService.provisionTenant(tenantName);
+
+      const data: Prisma.UserCreateInput = {
+        name: createUserDto.name,
+        email: createUserDto.email,
+        password: passwordCrypt,
+        tenant_name: tenantName,
+      };
+
+      return await this.prisma.user.create({
+        data,
+      });
     } catch (error) {
-      // If provisioning fails, ensure we cleanup the schema to avoid "Incomplete" tenants
+      // If any step after schema creation fails, cleanup to avoid orphaned tenants
       await this.prisma.$executeRawUnsafe(
         `DROP SCHEMA IF EXISTS "${tenantName}" CASCADE`,
       );
       throw error;
     }
-
-    const data: Prisma.UserCreateInput = {
-      name: createUserDto.name,
-      email: createUserDto.email,
-      password: passwordCrypt,
-      tenant_name: tenantName,
-    };
-
-    return this.prisma.user.create({
-      data,
-    });
   }
 
   async readOneByEmail(email: string) {

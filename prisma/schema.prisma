@@ -17,7 +17,7 @@ model User {
   email       String    @unique
   password    String
   tenant_name String    @unique
-  createAt    DateTime  @default(now())
-  updateAt    DateTime  @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   deleteAt    DateTime?
 }

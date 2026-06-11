@@ -18,11 +18,11 @@ export class UserResponseDto {
 
   @ApiProperty({ example: '2026-02-19T12:00:00.000Z' })
   @Expose()
-  createAt!: string;
+  createdAt!: string;
 
   @ApiProperty({ example: '2026-02-19T12:00:00.000Z' })
   @Expose()
-  updateAt!: string;
+  updatedAt!: string;
 
   static fromEntity(user: UserModel): UserResponseDto {
     return plainToInstance(UserResponseDto, user, {
