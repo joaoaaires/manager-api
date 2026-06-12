@@ -7,6 +7,7 @@ import { HealthModule } from './modules/health/health.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
+import { WebsocketModule } from './modules/websocket/websocket.module';
 import { loadValidation } from './config/load.validation';
 import { loadConfig } from './config/load.config';
 
@@ -24,6 +25,7 @@ import { loadConfig } from './config/load.config';
     AuthModule,
     UserModule,
     HealthModule,
+    WebsocketModule,
   ],
   controllers: [],
   providers: [

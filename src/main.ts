@@ -1,9 +1,11 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
+import { AppModule } from './app.module';
+
+import { WebsocketAdapter } from './modules/websocket/websocket.adapter';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -18,6 +20,9 @@ async function bootstrap() {
   app.enableCors({
     origin: configService.getOrThrow<string>('corsOrigin'),
   });
+  app.useWebSocketAdapter(
+    new WebsocketAdapter(app, configService.getOrThrow<string>('corsOrigin')),
+  );
 
   // setup validation params
   app.useGlobalPipes(
