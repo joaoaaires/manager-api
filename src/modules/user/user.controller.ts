@@ -1,4 +1,11 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Inject,
+  Req,
+  SerializeOptions,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOkResponse,
@@ -6,14 +13,20 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
+import { plainToInstance } from 'class-transformer';
 import { AuthGuard } from '../auth/auth.guard';
 import type { AuthenticatedRequest } from '../auth/interfaces';
-import { UserResponseDto } from './dto';
-import { UserService } from './user.service';
+import { UserResponseDto } from './dto/response/user-response.dto';
+import { User } from './entities/user.entity';
+import { IUserService, USER_SERVICE } from './services/user.service.interface';
 
 @Controller()
+@SerializeOptions({ excludeExtraneousValues: true })
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    @Inject(USER_SERVICE)
+    private readonly userService: IUserService,
+  ) {}
 
   @ApiOperation({ summary: 'Get authenticated user profile' })
   @ApiBearerAuth('bearer')
@@ -25,7 +38,15 @@ export class UserController {
   @UseGuards(AuthGuard)
   @Get('profile')
   async profile(@Req() request: AuthenticatedRequest) {
-    const user = await this.userService.readOneById(request.user.id);
-    return UserResponseDto.fromEntity(user);
+    const user = await this.userService.getUserById(request.user.id);
+    return this.toResponse(user);
+  }
+
+  private toResponse(user: User): UserResponseDto {
+    return plainToInstance(
+      UserResponseDto,
+      { ...user },
+      { excludeExtraneousValues: true },
+    );
   }
 }
