@@ -25,7 +25,6 @@ export class UserService implements IUserService {
       name: dto.name,
       email: dto.email,
       password: dto.password,
-      tenantName: 'teste',
     });
 
     return await this.userRepository.save(user);

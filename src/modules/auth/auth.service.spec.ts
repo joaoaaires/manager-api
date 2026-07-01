@@ -23,7 +23,6 @@ describe('AuthService', () => {
     name: 'John Doe',
     email: 'john@example.com',
     password: password,
-    tenantName: 'tenant_a1b2c3d4',
     createdAt: new Date('2026-02-19T12:00:00.000Z'),
     updatedAt: new Date('2026-02-19T12:00:00.000Z'),
   });
@@ -62,7 +61,6 @@ describe('AuthService', () => {
       });
       expect(jwtServiceMock.signAsync).toHaveBeenCalledWith({
         sub: user.id,
-        tenant: user.tenantName,
       });
       expect(result.token).toBe('jwt-token');
       expect(result.email).toBe(user.email);
@@ -83,7 +81,6 @@ describe('AuthService', () => {
       expect(userServiceMock.getUserByEmail).toHaveBeenCalledWith(user.email);
       expect(jwtServiceMock.signAsync).toHaveBeenCalledWith({
         sub: user.id,
-        tenant: user.tenantName,
       });
       expect(result.token).toBe('jwt-token');
     });

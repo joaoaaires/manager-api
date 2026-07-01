@@ -1,3 +1,5 @@
+## MODIFIED Requirements
+
 ### Requirement: WebSocket connection requires a valid JWT
 The system SHALL expose a Socket.IO WebSocket endpoint and SHALL only accept connections whose handshake presents a JWT that passes verification of signature (`secret`), `issuer` (`jwtIssuer`), `audience` (`jwtAudience`), and expiration. The token MUST be read from `handshake.auth.token`, with the `Authorization: Bearer <token>` handshake header accepted as fallback. No `tenant` claim validation is performed.
 
@@ -43,9 +45,12 @@ The system SHALL maintain an in-memory array of currently connected users. Each 
 - **WHEN** a disconnect is processed for a socket id that is not present in the array
 - **THEN** the array is unchanged and no exit log is produced
 
-### Requirement: WebSocket handshake honors configured CORS origin
-The Socket.IO server SHALL apply the same `corsOrigin` configuration used by the HTTP API to its handshake CORS policy.
+## REMOVED Requirements
 
-#### Scenario: Handshake from allowed origin
-- **WHEN** a client from the configured `corsOrigin` initiates a handshake
-- **THEN** the CORS headers permit the handshake to proceed
+### Requirement: Tenant claim validation on WebSocket handshake
+**Reason**: The `tenant` claim has been removed from the JWT. The gateway no longer reads or validates `payload.tenant`.
+**Migration**: If tenant scoping is reintroduced, add the claim back to the JWT and reinstate pattern validation in the Socket.IO middleware.
+
+### Requirement: Connected users tracked with tenantName
+**Reason**: The `ConnectedUser` type no longer carries `tenantName` — it was removed when tenant isolation was dropped from the domain.
+**Migration**: N/A — the field is gone from the interface and the in-memory store.

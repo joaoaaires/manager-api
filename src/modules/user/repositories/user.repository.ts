@@ -13,7 +13,6 @@ export class UserRepository implements IUserRepository {
       name: user.name,
       email: user.email,
       password: user.password,
-      tenant_name: user.tenantName,
     };
 
     const record: PrismaUser = await this.prisma.user.create({ data });
@@ -41,7 +40,6 @@ export class UserRepository implements IUserRepository {
       name: record.name,
       email: record.email,
       password: record.password,
-      tenantName: record.tenant_name,
       createdAt: record.createdAt,
       updatedAt: record.updatedAt,
       deletedAt: record.deleteAt ?? undefined,

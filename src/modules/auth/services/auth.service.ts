@@ -21,7 +21,7 @@ export class AuthService implements IAuthService {
   async register(signUpDto: SignUpDto): Promise<AuthResponseDto> {
     const user = await this.userService.createUser(signUpDto);
 
-    const payload = { sub: user.id, tenant: user.tenantName };
+    const payload = { sub: user.id };
     const accessToken = await this.jwtService.signAsync(payload);
 
     return AuthResponseDto.fromEntity(user, accessToken);
@@ -35,7 +35,7 @@ export class AuthService implements IAuthService {
       throw new UserUnauthorizedException();
     }
 
-    const payload = { sub: user.id, tenant: user.tenantName };
+    const payload = { sub: user.id };
     const accessToken = await this.jwtService.signAsync(payload);
 
     return AuthResponseDto.fromEntity(user, accessToken);

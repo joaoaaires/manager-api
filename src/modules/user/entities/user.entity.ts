@@ -3,7 +3,6 @@ type UserProps = {
   name: string;
   email: string;
   password: string;
-  tenantName: string;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
@@ -14,7 +13,6 @@ export class User {
   readonly name: string;
   readonly email: string;
   readonly password: string;
-  readonly tenantName: string;
   readonly createdAt?: Date;
   readonly updatedAt?: Date;
   readonly deletedAt?: Date;
@@ -24,7 +22,6 @@ export class User {
     this.name = props.name;
     this.email = props.email;
     this.password = props.password;
-    this.tenantName = props.tenantName;
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
     this.deletedAt = props.deletedAt;

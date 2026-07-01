@@ -80,10 +80,7 @@ describe('WebsocketGateway', () => {
 
   describe('handshake authentication', () => {
     it('accepts a connection with a valid token and attaches the user', async () => {
-      jwtServiceMock.verifyAsync.mockResolvedValue({
-        sub: 'user-id',
-        tenant: 'tenant_a1b2c3d4',
-      });
+      jwtServiceMock.verifyAsync.mockResolvedValue({ sub: 'user-id' });
       const socket = buildSocket({
         handshake: { auth: { token: 'valid-token' }, headers: {} },
       });
@@ -97,15 +94,12 @@ describe('WebsocketGateway', () => {
         audience: 'manager-api-clients',
       });
       expect(socket.data).toEqual({
-        user: { id: 'user-id', tenantName: 'tenant_a1b2c3d4' },
+        user: { id: 'user-id' },
       });
     });
 
     it('accepts a token from the Authorization Bearer header as fallback', async () => {
-      jwtServiceMock.verifyAsync.mockResolvedValue({
-        sub: 'user-id',
-        tenant: 'tenant_a1b2c3d4',
-      });
+      jwtServiceMock.verifyAsync.mockResolvedValue({ sub: 'user-id' });
       const socket = buildSocket({
         handshake: {
           auth: {},
@@ -144,38 +138,12 @@ describe('WebsocketGateway', () => {
       expect(error?.message).toBe('Unauthorized');
     });
 
-    it('rejects a payload without tenant claim', async () => {
-      jwtServiceMock.verifyAsync.mockResolvedValue({ sub: 'user-id' });
-      const socket = buildSocket({
-        handshake: { auth: { token: 'valid-token' }, headers: {} },
-      });
-
-      const error = await runMiddleware(socket);
-
-      expect(error).toBeInstanceOf(Error);
-      expect(error?.message).toBe('Unauthorized');
-    });
-
-    it('rejects a malformed tenant claim', async () => {
-      jwtServiceMock.verifyAsync.mockResolvedValue({
-        sub: 'user-id',
-        tenant: 'Tenant-X"; DROP SCHEMA public CASCADE; --',
-      });
-      const socket = buildSocket({
-        handshake: { auth: { token: 'valid-token' }, headers: {} },
-      });
-
-      const error = await runMiddleware(socket);
-
-      expect(error).toBeInstanceOf(Error);
-      expect(error?.message).toBe('Unauthorized');
-    });
   });
 
   describe('handleConnection', () => {
     it('tracks the user and logs the connection', () => {
       const socket = buildSocket({
-        data: { user: { id: 'user-id', tenantName: 'tenant_a1b2c3d4' } },
+        data: { user: { id: 'user-id' } },
       });
 
       gateway.handleConnection(socket);
@@ -184,7 +152,6 @@ describe('WebsocketGateway', () => {
         expect.objectContaining({
           socketId: 'socket-1',
           userId: 'user-id',
-          tenantName: 'tenant_a1b2c3d4',
         }),
       ]);
       expect(logSpy).toHaveBeenCalledWith(
@@ -206,7 +173,7 @@ describe('WebsocketGateway', () => {
   describe('handleDisconnect', () => {
     it('removes the user and logs the disconnection', () => {
       const socket = buildSocket({
-        data: { user: { id: 'user-id', tenantName: 'tenant_a1b2c3d4' } },
+        data: { user: { id: 'user-id' } },
       });
       gateway.handleConnection(socket);
 
