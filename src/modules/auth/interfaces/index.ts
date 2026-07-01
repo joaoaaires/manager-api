@@ -9,7 +9,6 @@ export interface JwtPayload {
 
 export interface AuthenticatedUser {
   id: string;
-  tenantName: string;
 }
 
 export interface AuthenticatedRequest extends Request {

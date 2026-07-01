@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import {
@@ -10,8 +10,8 @@ import {
 import { Server, Socket } from 'socket.io';
 
 import { AuthenticatedUser, JwtPayload } from '../auth/interfaces';
-import { TENANT_NAME_PATTERN } from '../tenant/tenant-name.constants';
-import { ConnectedUsersService } from './connected-users.service';
+import { CONNECTED_USERS_SERVICE } from './services/connected-users.service.interface';
+import type { IConnectedUsersService } from './services/connected-users.service.interface';
 
 interface SocketUserData {
   user?: AuthenticatedUser;
@@ -26,7 +26,8 @@ export class WebsocketGateway
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-    private readonly connectedUsersService: ConnectedUsersService,
+    @Inject(CONNECTED_USERS_SERVICE)
+    private readonly connectedUsersService: IConnectedUsersService,
   ) {}
 
   // Guards do not run on the connection event, so authentication must happen
@@ -48,12 +49,9 @@ export class WebsocketGateway
     this.connectedUsersService.add({
       socketId: socket.id,
       userId: user.id,
-      tenantName: user.tenantName,
       connectedAt: new Date(),
     });
-    this.logger.log(
-      `User connected: userId=${user.id} tenant=${user.tenantName} socketId=${socket.id}`,
-    );
+    this.logger.log(`User connected: userId=${user.id} socketId=${socket.id}`);
   }
 
   handleDisconnect(socket: Socket): void {
@@ -63,7 +61,7 @@ export class WebsocketGateway
     }
 
     this.logger.log(
-      `User disconnected: userId=${removed.userId} tenant=${removed.tenantName} socketId=${removed.socketId}`,
+      `User disconnected: userId=${removed.userId} socketId=${removed.socketId}`,
     );
   }
 
@@ -84,15 +82,8 @@ export class WebsocketGateway
         audience: this.configService.getOrThrow<string>('jwtAudience'),
       });
 
-      // Same defense as AuthStrategy: the claim reaches raw SQL downstream.
-      if (!payload.tenant || !TENANT_NAME_PATTERN.test(payload.tenant)) {
-        next(new Error('Unauthorized'));
-        return;
-      }
-
       (socket.data as SocketUserData).user = {
         id: payload.sub,
-        tenantName: payload.tenant,
       };
       next();
     } catch {

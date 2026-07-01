@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Inject, Post } from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiOperation,
@@ -7,12 +7,16 @@ import {
 } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 
-import { AuthService } from './auth.service';
-import { AuthResponseDto, SignInDto, SignUpDto } from './dto';
+import { SignUpDto, SignInDto, AuthResponseDto } from '../dto';
+import { AUTH_SERVICE } from '../services/auth.service.interface';
+import type { IAuthService } from '../services/auth.service.interface';
 
 @Controller()
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    @Inject(AUTH_SERVICE)
+    private readonly authService: IAuthService,
+  ) {}
 
   @ApiOperation({ summary: 'Register a new user account' })
   @ApiCreatedResponse({

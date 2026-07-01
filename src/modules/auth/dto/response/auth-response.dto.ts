@@ -1,7 +1,7 @@
 import { Expose, plainToInstance } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { UserModel } from '../../../generated/prisma/models';
+import { User } from '../../../user/entities/user.entity';
 
 export class AuthResponseDto {
   @ApiProperty({ example: 'b3909d91-3cbd-49cf-8c87-859d417fc18b' })
@@ -31,7 +31,7 @@ export class AuthResponseDto {
   @Expose()
   token!: string;
 
-  static fromEntity(user: UserModel, token: string): AuthResponseDto {
+  static fromEntity(user: User, token: string): AuthResponseDto {
     return plainToInstance(
       AuthResponseDto,
       { ...user, token },

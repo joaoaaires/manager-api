@@ -18,7 +18,8 @@ import { AuthGuard } from '../auth/auth.guard';
 import type { AuthenticatedRequest } from '../auth/interfaces';
 import { UserResponseDto } from './dto/response/user-response.dto';
 import { User } from './entities/user.entity';
-import { IUserService, USER_SERVICE } from './services/user.service.interface';
+import { USER_SERVICE } from './services/user.service.interface';
+import type { IUserService } from './services/user.service.interface';
 
 @Controller()
 @SerializeOptions({ excludeExtraneousValues: true })

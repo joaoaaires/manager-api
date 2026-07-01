@@ -3,8 +3,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 
 import { UserModule } from '../user/user.module';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
+import { AuthController } from './controllers/auth.controller';
+import { AuthService } from './services/auth.service';
+import { AUTH_SERVICE } from './services/auth.service.interface';
 import { AuthStrategy } from './auth.strategy';
 
 @Module({
@@ -17,13 +18,19 @@ import { AuthStrategy } from './auth.strategy';
         secret: configService.get<string>('secret'),
         signOptions: {
           expiresIn: configService.get<number>('jwtExpiresIn') ?? 86400,
-          issuer: configService.getOrThrow<string>('jwtIssuer'), // Define quem emitiu o token.
-          audience: configService.getOrThrow<string>('jwtAudience'), // Define para quem o token foi emitido.
+          issuer: configService.getOrThrow<string>('jwtIssuer'),
+          audience: configService.getOrThrow<string>('jwtAudience'),
         },
       }),
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthStrategy, AuthService],
+  providers: [
+    AuthStrategy,
+    {
+      provide: AUTH_SERVICE,
+      useClass: AuthService,
+    },
+  ],
 })
 export class AuthModule {}

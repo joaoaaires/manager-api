@@ -3,10 +3,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from '../dto/request/create-user.dto';
 import { User } from '../entities/user.entity';
 import { EmailAlreadyExistsException, UserNotFoundException } from '../errors';
-import {
-  IUserRepository,
-  USER_REPOSITORY,
-} from '../repositories/user.repository.interface';
+import { USER_REPOSITORY } from '../repositories/user.repository.interface';
+import type { IUserRepository } from '../repositories/user.repository.interface';
 import { IUserService } from './user.service.interface';
 
 @Injectable()

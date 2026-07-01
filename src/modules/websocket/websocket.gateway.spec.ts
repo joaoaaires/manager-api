@@ -4,14 +4,18 @@ import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Server, Socket } from 'socket.io';
 
-import { ConnectedUsersService } from './connected-users.service';
+import { ConnectedUsersService } from './services/connected-users.service';
+import {
+  CONNECTED_USERS_SERVICE,
+  IConnectedUsersService,
+} from './services/connected-users.service.interface';
 import { WebsocketGateway } from './websocket.gateway';
 
 type Middleware = (socket: Socket, next: (err?: Error) => void) => void;
 
 describe('WebsocketGateway', () => {
   let gateway: WebsocketGateway;
-  let connectedUsersService: ConnectedUsersService;
+  let connectedUsersService: IConnectedUsersService;
   let logSpy: jest.SpyInstance;
 
   const jwtServiceMock = {
@@ -55,15 +59,15 @@ describe('WebsocketGateway', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         WebsocketGateway,
-        ConnectedUsersService,
+        { provide: CONNECTED_USERS_SERVICE, useClass: ConnectedUsersService },
         { provide: JwtService, useValue: jwtServiceMock },
         { provide: ConfigService, useValue: configServiceMock },
       ],
     }).compile();
 
     gateway = module.get<WebsocketGateway>(WebsocketGateway);
-    connectedUsersService = module.get<ConnectedUsersService>(
-      ConnectedUsersService,
+    connectedUsersService = module.get<IConnectedUsersService>(
+      CONNECTED_USERS_SERVICE,
     );
 
     // Drop framework logs emitted during module compilation.
