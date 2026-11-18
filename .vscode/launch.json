@@ -1,0 +1,69 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug API (watch)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": ["start:debug"],
+      "cwd": "${workspaceFolder}",
+      "console": "internalConsole",
+      "outputCapture": "std",
+      "autoAttachChildProcesses": true,
+      "restart": true,
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "skipFiles": ["<node_internals>/**", "${workspaceFolder}/node_modules/**"]
+    },
+    {
+      "name": "Debug API (build + dist)",
+      "type": "node",
+      "request": "launch",
+      "preLaunchTask": "npm: build",
+      "program": "${workspaceFolder}/dist/src/main.js",
+      "cwd": "${workspaceFolder}",
+      "console": "internalConsole",
+      "outputCapture": "std",
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "skipFiles": ["<node_internals>/**", "${workspaceFolder}/node_modules/**"]
+    },
+    {
+      "name": "Attach to running API",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "restart": true,
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "skipFiles": ["<node_internals>/**", "${workspaceFolder}/node_modules/**"]
+    },
+    {
+      "name": "Debug unit tests (current file)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
+      "args": ["run", "--no-file-parallelism", "${relativeFile}"],
+      "cwd": "${workspaceFolder}",
+      "console": "internalConsole",
+      "outputCapture": "std",
+      "autoAttachChildProcesses": true,
+      "smartStep": true,
+      "skipFiles": ["<node_internals>/**", "${workspaceFolder}/node_modules/**"]
+    },
+    {
+      "name": "Debug e2e tests",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
+      "args": ["run", "--config", "./vitest.config.e2e.ts", "--no-file-parallelism"],
+      "cwd": "${workspaceFolder}",
+      "console": "internalConsole",
+      "outputCapture": "std",
+      "autoAttachChildProcesses": true,
+      "smartStep": true,
+      "skipFiles": ["<node_internals>/**", "${workspaceFolder}/node_modules/**"]
+    }
+  ]
+}
