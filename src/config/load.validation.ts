@@ -4,7 +4,9 @@ type Env = Record<string, unknown>;
 
 const envSchema = z.object({
   PORT: z.coerce.number().positive(),
-  DATABASE_URL: z.string().min(1),
+  DATABASE_URL: z
+    .string()
+    .regex(/^(mysql|mariadb):\/\//, 'must be a mysql:// or mariadb:// URL'),
   SALT: z.coerce.number().positive(),
   SECRET: z.string().min(1),
   JWT_EXPIRES_IN: z.coerce.number().positive(),

@@ -31,6 +31,28 @@
 $ yarn install
 ```
 
+## Database
+
+The API uses MariaDB 11.8 on `cleitin-server` (`192.168.100.180:3306`), database `manager` (`utf8mb4_unicode_ci`), through Prisma's `mysql` provider and the `@prisma/adapter-mariadb` driver adapter.
+
+Copy `.env.example` to `.env` and fill in the `manager` user's password:
+
+- `DATABASE_URL`: used by the app (`mysql://` or `mariadb://` only)
+- `DIRECT_URL`: used by the Prisma CLI for migrations
+- `SHADOW_DATABASE_URL`: shadow database (`manager_shadow`) used by `prisma migrate dev`
+
+> `yarn install` runs `prisma migrate deploy` in `postinstall`, so the database must be reachable during install.
+
+```bash
+# create a migration after changing prisma/schema.prisma
+$ yarn db:migrate:dev --name <name>
+
+# apply pending migrations
+$ yarn db:migrate:prod
+```
+
+Emails are unique case-insensitively (`A@x.com` and `a@x.com` conflict) because of the database collation.
+
 ## Compile and run the project
 
 ```bash

@@ -3,7 +3,7 @@ import { loadValidation } from './load.validation';
 describe('loadValidation', () => {
   const validEnv = {
     PORT: '3000',
-    DATABASE_URL: 'postgres://localhost:5432/db',
+    DATABASE_URL: 'mysql://user:pass@localhost:3306/db',
     SALT: '10',
     SECRET: 'mysecret',
     JWT_EXPIRES_IN: '3600',
@@ -15,7 +15,7 @@ describe('loadValidation', () => {
     const result = loadValidation(validEnv);
     expect(result).toEqual({
       PORT: 3000,
-      DATABASE_URL: 'postgres://localhost:5432/db',
+      DATABASE_URL: 'mysql://user:pass@localhost:3306/db',
       SALT: 10,
       SECRET: 'mysecret',
       JWT_EXPIRES_IN: 3600,
@@ -42,6 +42,16 @@ describe('loadValidation', () => {
     const invalidEnv = { ...validEnv, SALT: '-1' };
     expect(() => loadValidation(invalidEnv)).toThrow(
       'Environment variable validation failed: SALT: Too small: expected number to be >0',
+    );
+  });
+
+  it('should throw error when DATABASE_URL is not a MariaDB URL', () => {
+    const invalidEnv = {
+      ...validEnv,
+      DATABASE_URL: 'postgres://localhost:5432/db',
+    };
+    expect(() => loadValidation(invalidEnv)).toThrow(
+      'Environment variable validation failed: DATABASE_URL: must be a mysql:// or mariadb:// URL',
     );
   });
 });

@@ -1,7 +1,7 @@
 # user-account-integrity Specification
 
 ## Purpose
-TBD - created by archiving change api-hardening-reliability. Update Purpose after archive.
+Guarantees that user accounts stay consistent: one account per email, and soft-deleted users can neither authenticate nor be read.
 ## Requirements
 ### Requirement: Duplicate email race resolves to a conflict error
 `UserService.create()` SHALL map Prisma unique-constraint violations (`P2002`) on the email column to `EmailAlreadyExistsException` (HTTP 409). The existing tenant schema rollback SHALL still execute before the exception is thrown.
@@ -20,4 +20,11 @@ TBD - created by archiving change api-hardening-reliability. Update Purpose afte
 #### Scenario: Soft-deleted user token cannot access profile
 - **WHEN** `GET /profile` is called with a token whose subject is a soft-deleted user
 - **THEN** the response is an error and no profile data is returned
+
+### Requirement: Email uniqueness is case-insensitive
+The system SHALL treat emails that differ only in letter case as the same email for uniqueness, so a second account cannot be created with a case variant of an existing email.
+
+#### Scenario: Sign-up with a case variant of an existing email
+- **WHEN** a user with email `joao@example.com` exists and a new account is created with `Joao@Example.com`
+- **THEN** the request receives HTTP 409 and no new user is stored
 
