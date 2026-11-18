@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
@@ -14,12 +15,15 @@ import { IAuthService } from './auth.service.interface';
 export class AuthService implements IAuthService {
   constructor(
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
     @Inject(USER_SERVICE)
     private readonly userService: IUserService,
   ) {}
 
   async register(signUpDto: SignUpDto): Promise<AuthResponseDto> {
-    const user = await this.userService.createUser(signUpDto);
+    const salt = this.configService.getOrThrow<number>('salt');
+    const password = await bcrypt.hash(signUpDto.password, salt);
+    const user = await this.userService.createUser({ ...signUpDto, password });
 
     const payload = { sub: user.id };
     const accessToken = await this.jwtService.signAsync(payload);

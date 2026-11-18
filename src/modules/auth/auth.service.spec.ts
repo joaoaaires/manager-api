@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
@@ -12,6 +13,10 @@ describe('AuthService', () => {
   const userServiceMock = {
     createUser: jest.fn(),
     getUserByEmail: jest.fn(),
+  };
+
+  const configServiceMock = {
+    getOrThrow: jest.fn().mockReturnValue(4),
   };
 
   const jwtServiceMock = {
@@ -36,6 +41,7 @@ describe('AuthService', () => {
         AuthService,
         { provide: USER_SERVICE, useValue: userServiceMock },
         { provide: JwtService, useValue: jwtServiceMock },
+        { provide: ConfigService, useValue: configServiceMock },
       ],
     }).compile();
 
@@ -54,11 +60,10 @@ describe('AuthService', () => {
         password: 'secret123',
       });
 
-      expect(userServiceMock.createUser).toHaveBeenCalledWith({
-        name: user.name,
-        email: user.email,
-        password: 'secret123',
-      });
+      const [created] = userServiceMock.createUser.mock.calls[0];
+      expect(created).toMatchObject({ name: user.name, email: user.email });
+      expect(created.password).not.toBe('secret123');
+      expect(await bcrypt.compare('secret123', created.password)).toBe(true);
       expect(jwtServiceMock.signAsync).toHaveBeenCalledWith({
         sub: user.id,
       });
