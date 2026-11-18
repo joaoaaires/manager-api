@@ -1,4 +1,4 @@
-import { ConnectedUser } from '../interfaces';
+import { ConnectedUser } from '../interfaces/index.js';
 
 export const CONNECTED_USERS_SERVICE = Symbol('CONNECTED_USERS_SERVICE');
 

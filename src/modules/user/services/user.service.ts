@@ -1,11 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { CreateUserDto } from '../dto/request/create-user.dto';
-import { User } from '../entities/user.entity';
-import { EmailAlreadyExistsException, UserNotFoundException } from '../errors';
-import { USER_REPOSITORY } from '../repositories/user.repository.interface';
-import type { IUserRepository } from '../repositories/user.repository.interface';
-import { IUserService } from './user.service.interface';
+import { CreateUserDto } from '../dto/request/create-user.dto.js';
+import { User } from '../entities/user.entity.js';
+import {
+  EmailAlreadyExistsException,
+  UserNotFoundException,
+} from '../errors/index.js';
+import { USER_REPOSITORY } from '../repositories/user.repository.interface.js';
+import type { IUserRepository } from '../repositories/user.repository.interface.js';
+import { IUserService } from './user.service.interface.js';
 
 @Injectable()
 export class UserService implements IUserService {

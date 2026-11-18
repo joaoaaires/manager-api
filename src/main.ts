@@ -3,9 +3,9 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
-import { AppModule } from './app.module';
+import { AppModule } from './app.module.js';
 
-import { WebsocketAdapter } from './modules/websocket/websocket.adapter';
+import { WebsocketAdapter } from './modules/websocket/websocket.adapter.js';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');

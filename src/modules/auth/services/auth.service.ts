@@ -3,13 +3,13 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
-import { USER_SERVICE } from '../../user/services/user.service.interface';
-import type { IUserService } from '../../user/services/user.service.interface';
-import { AuthResponseDto } from '../dto/response/auth-response.dto';
-import { SignInDto } from '../dto/request/sign-in.dto';
-import { SignUpDto } from '../dto/request/sign-up.dto';
-import { UserUnauthorizedException } from '../errors';
-import { IAuthService } from './auth.service.interface';
+import { USER_SERVICE } from '../../user/services/user.service.interface.js';
+import type { IUserService } from '../../user/services/user.service.interface.js';
+import { AuthResponseDto } from '../dto/response/auth-response.dto.js';
+import { SignInDto } from '../dto/request/sign-in.dto.js';
+import { SignUpDto } from '../dto/request/sign-up.dto.js';
+import { UserUnauthorizedException } from '../errors/index.js';
+import { IAuthService } from './auth.service.interface.js';
 
 @Injectable()
 export class AuthService implements IAuthService {

@@ -1,3 +1,3 @@
-export * from './request/sign-up.dto';
-export * from './request/sign-in.dto';
-export * from './response/auth-response.dto';
+export * from './request/sign-up.dto.js';
+export * from './request/sign-in.dto.js';
+export * from './response/auth-response.dto.js';

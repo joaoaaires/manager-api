@@ -4,26 +4,27 @@ import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Server, Socket } from 'socket.io';
 
-import { ConnectedUsersService } from './services/connected-users.service';
+import { ConnectedUsersService } from './services/connected-users.service.js';
 import {
   CONNECTED_USERS_SERVICE,
   IConnectedUsersService,
-} from './services/connected-users.service.interface';
-import { WebsocketGateway } from './websocket.gateway';
+} from './services/connected-users.service.interface.js';
+import { WebsocketGateway } from './websocket.gateway.js';
+import type { Mock, MockInstance } from 'vitest';
 
 type Middleware = (socket: Socket, next: (err?: Error) => void) => void;
 
 describe('WebsocketGateway', () => {
   let gateway: WebsocketGateway;
   let connectedUsersService: IConnectedUsersService;
-  let logSpy: jest.SpyInstance;
+  let logSpy: MockInstance;
 
   const jwtServiceMock = {
-    verifyAsync: jest.fn(),
+    verifyAsync: vi.fn(),
   };
 
   const configServiceMock = {
-    getOrThrow: jest.fn((key: string) => {
+    getOrThrow: vi.fn((key: string) => {
       const values: Record<string, string> = {
         secret: 'test-secret',
         jwtIssuer: 'manager-api',
@@ -38,14 +39,14 @@ describe('WebsocketGateway', () => {
       id: 'socket-1',
       handshake: { auth: {}, headers: {} },
       data: {},
-      disconnect: jest.fn(),
+      disconnect: vi.fn(),
       ...overrides,
     }) as unknown as Socket;
 
   const runMiddleware = (socket: Socket): Promise<Error | undefined> => {
-    const server = { use: jest.fn() } as unknown as Server;
+    const server = { use: vi.fn() } as unknown as Server;
     gateway.afterInit(server);
-    const middleware = (server.use as jest.Mock).mock.calls[0][0] as Middleware;
+    const middleware = (server.use as Mock).mock.calls[0][0] as Middleware;
 
     return new Promise((resolve) => {
       middleware(socket, (err?: Error) => resolve(err));
@@ -53,8 +54,8 @@ describe('WebsocketGateway', () => {
   };
 
   beforeEach(async () => {
-    jest.clearAllMocks();
-    logSpy = jest.spyOn(Logger.prototype, 'log').mockImplementation();
+    vi.clearAllMocks();
+    logSpy = vi.spyOn(Logger.prototype, 'log').mockImplementation(() => undefined);
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [

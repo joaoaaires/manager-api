@@ -3,13 +3,13 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
-import { loadConfig } from './config/load.config';
-import { loadValidation } from './config/load.validation';
-import { DatabaseModule } from './database/database.module';
-import { AuthModule } from './modules/auth/auth.module';
-import { HealthModule } from './modules/health/health.module';
-import { UserModule } from './modules/user/user.module';
-import { WebsocketModule } from './modules/websocket/websocket.module';
+import { loadConfig } from './config/load.config.js';
+import { loadValidation } from './config/load.validation.js';
+import { DatabaseModule } from './database/database.module.js';
+import { AuthModule } from './modules/auth/auth.module.js';
+import { HealthModule } from './modules/health/health.module.js';
+import { UserModule } from './modules/user/user.module.js';
+import { WebsocketModule } from './modules/websocket/websocket.module.js';
 
 @Module({
   imports: [

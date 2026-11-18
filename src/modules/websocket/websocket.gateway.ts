@@ -9,9 +9,9 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-import { AuthenticatedUser, JwtPayload } from '../auth/interfaces';
-import { CONNECTED_USERS_SERVICE } from './services/connected-users.service.interface';
-import type { IConnectedUsersService } from './services/connected-users.service.interface';
+import { AuthenticatedUser, JwtPayload } from '../auth/interfaces/index.js';
+import { CONNECTED_USERS_SERVICE } from './services/connected-users.service.interface.js';
+import type { IConnectedUsersService } from './services/connected-users.service.interface.js';
 
 interface SocketUserData {
   user?: AuthenticatedUser;

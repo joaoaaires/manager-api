@@ -25,5 +25,5 @@ export const loadValidation = (env: Env): Env => {
     throw new Error(`Environment variable validation failed: ${errors}`);
   }
 
-  return result.data as unknown as Env;
+  return result.data;
 };

@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 
-import { AuthStrategy } from './auth.strategy';
-import { JwtPayload } from './interfaces';
+import { AuthStrategy } from './auth.strategy.js';
+import { JwtPayload } from './interfaces/index.js';
 
 describe('AuthStrategy', () => {
   let strategy: AuthStrategy;
 
   const configServiceMock = {
-    getOrThrow: jest.fn((key: string) => {
+    getOrThrow: vi.fn((key: string) => {
       const values: Record<string, string> = {
         secret: 'test-secret',
         jwtIssuer: 'manager-api',

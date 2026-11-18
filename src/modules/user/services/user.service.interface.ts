@@ -1,5 +1,5 @@
-import { CreateUserDto } from '../dto';
-import { User } from '../entities/user.entity';
+import { CreateUserDto } from '../dto/index.js';
+import { User } from '../entities/user.entity.js';
 
 export const USER_SERVICE = Symbol('USER_SERVICE');
 

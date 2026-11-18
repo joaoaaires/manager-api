@@ -7,9 +7,9 @@ import {
 } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 
-import { SignUpDto, SignInDto, AuthResponseDto } from '../dto';
-import { AUTH_SERVICE } from '../services/auth.service.interface';
-import type { IAuthService } from '../services/auth.service.interface';
+import { SignUpDto, SignInDto, AuthResponseDto } from '../dto/index.js';
+import { AUTH_SERVICE } from '../services/auth.service.interface.js';
+import type { IAuthService } from '../services/auth.service.interface.js';
 
 @Controller()
 export class AuthController {

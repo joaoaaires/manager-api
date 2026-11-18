@@ -3,24 +3,24 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
-import { USER_SERVICE } from '../user/services/user.service.interface';
-import { AuthService } from './services/auth.service';
-import { UserUnauthorizedException } from './errors';
+import { USER_SERVICE } from '../user/services/user.service.interface.js';
+import { AuthService } from './services/auth.service.js';
+import { UserUnauthorizedException } from './errors/index.js';
 
 describe('AuthService', () => {
   let service: AuthService;
 
   const userServiceMock = {
-    createUser: jest.fn(),
-    getUserByEmail: jest.fn(),
+    createUser: vi.fn(),
+    getUserByEmail: vi.fn(),
   };
 
   const configServiceMock = {
-    getOrThrow: jest.fn().mockReturnValue(4),
+    getOrThrow: vi.fn().mockReturnValue(4),
   };
 
   const jwtServiceMock = {
-    signAsync: jest.fn().mockResolvedValue('jwt-token'),
+    signAsync: vi.fn().mockResolvedValue('jwt-token'),
   };
 
   const buildUser = (password: string) => ({
@@ -33,7 +33,7 @@ describe('AuthService', () => {
   });
 
   beforeEach(async () => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     jwtServiceMock.signAsync.mockResolvedValue('jwt-token');
 
     const module: TestingModule = await Test.createTestingModule({

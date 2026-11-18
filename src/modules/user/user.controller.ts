@@ -14,12 +14,12 @@ import {
 } from '@nestjs/swagger';
 
 import { plainToInstance } from 'class-transformer';
-import { AuthGuard } from '../auth/auth.guard';
-import type { AuthenticatedRequest } from '../auth/interfaces';
-import { UserResponseDto } from './dto/response/user-response.dto';
-import { User } from './entities/user.entity';
-import { USER_SERVICE } from './services/user.service.interface';
-import type { IUserService } from './services/user.service.interface';
+import { AuthGuard } from '../auth/auth.guard.js';
+import type { AuthenticatedRequest } from '../auth/interfaces/index.js';
+import { UserResponseDto } from './dto/response/user-response.dto.js';
+import { User } from './entities/user.entity.js';
+import { USER_SERVICE } from './services/user.service.interface.js';
+import type { IUserService } from './services/user.service.interface.js';
 
 @Controller()
 @SerializeOptions({ excludeExtraneousValues: true })

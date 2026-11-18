@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 
-import { UserRepository } from './repositories/user.repository';
-import { USER_REPOSITORY } from './repositories/user.repository.interface';
-import { UserService } from './services/user.service';
-import { USER_SERVICE } from './services/user.service.interface';
-import { UserController } from './user.controller';
+import { UserRepository } from './repositories/user.repository.js';
+import { USER_REPOSITORY } from './repositories/user.repository.interface.js';
+import { UserService } from './services/user.service.js';
+import { USER_SERVICE } from './services/user.service.interface.js';
+import { UserController } from './user.controller.js';
 
 @Module({
   imports: [],

@@ -25,6 +25,10 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Requirements
+
+- Node.js 22.12+ (NestJS 12 and Vitest 5); the project is native ESM (`"type": "module"`), so relative imports use the `.js` extension.
+
 ## Project setup
 
 ```bash
@@ -69,10 +73,13 @@ $ yarn run start:prod
 ## Run tests
 
 ```bash
-# unit tests
+# unit tests (Vitest)
 $ yarn run test
 
-# e2e tests
+# watch mode
+$ yarn run test:watch
+
+# e2e tests (Vitest, vitest.config.e2e.ts)
 $ yarn run test:e2e
 
 # test coverage

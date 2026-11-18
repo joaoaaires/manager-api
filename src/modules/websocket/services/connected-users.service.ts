@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-import { ConnectedUser } from '../interfaces';
-import { IConnectedUsersService } from './connected-users.service.interface';
+import { ConnectedUser } from '../interfaces/index.js';
+import { IConnectedUsersService } from './connected-users.service.interface.js';
 
 // In-memory store, single instance only; swap for a shared store (e.g. Redis)
 // before scaling horizontally.

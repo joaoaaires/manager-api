@@ -1,2 +1,2 @@
-export * from './request/create-user.dto';
-export * from './response/user-response.dto';
+export * from './request/create-user.dto.js';
+export * from './response/user-response.dto.js';

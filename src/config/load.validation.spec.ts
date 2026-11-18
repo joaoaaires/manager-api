@@ -1,4 +1,4 @@
-import { loadValidation } from './load.validation';
+import { loadValidation } from './load.validation.js';
 
 describe('loadValidation', () => {
   const validEnv = {
